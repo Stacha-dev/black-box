@@ -1,2 +1,4 @@
-BLACK BOX
-SQL PASS: nyJEA8o#GrdZn
+<?php
+
+    include './php/ini.php';
+    include './php/layout.php';
