@@ -1,7 +1,8 @@
 // IMPORT fce
 ////////////////////////////////////////////////////////////////////////////////
-import {loading, title} from './router_fce.js';
-import {json2html} from './json2html.js';
+import {loading, title, error} from './router_fce.js';
+import {memex} from './memex.js';
+
 
 // PREPINAC STRANEK
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,29 +56,58 @@ export function page(url) {
 
   // START LOADING PAGE
   // POKUD JE UVNITR STRANKY #CONTENT, UDELAT FADEOUT
+  var delay = 0;
   if ($('#content').length) {
     $('#content').addClass('fadeout');
-    var div = $('#content');
 
+    var div = $('#content');
       var dur = div.css('transition-duration');
       var delay = (dur.substring(0, dur.length-1))*1000;
-  } else {
-    var delay = 0;
+
   }
 
   // JAKMILE SE DOKONCI FADEOUT, SPUSTIT LOAD OBSAHU
   setTimeout(function(){
 
-        $("body").html('<div id="content" class="fadeout"></div>');
+        $('#content').remove();
+        $("body").append('<div id="content" class="fadeout"></div>');
 
         $.get(file, function(res){
 
-          var obsah = json2html(res);
+          // OBSAH
+          try {
 
-          $("#content").append(obsah);
-          $('#content').removeClass('fadeout');
+            var obj = JSON.parse(res);
 
-          title(url);
+              $("#content").append(obj.html);
+              $('#content').removeClass('fadeout');
+              title(url);
+
+            try {
+
+              switch (obj.headder) {
+
+                case 'memex':
+                  memex();
+                break;
+
+                default:
+                break;
+              }
+
+            } catch (e) {
+              error('intro error');
+            }
+
+          // JSON je rozbitej
+          } catch (e) {
+              if (e instanceof SyntaxError) {
+                  error('data not json');
+              } else {
+                  error('general error');
+              }
+          }
+
           loading('off');
 
         });

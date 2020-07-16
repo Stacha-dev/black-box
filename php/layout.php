@@ -16,7 +16,7 @@ echo '
     <meta name="author" content="Jana Horáková — Teorietická koncepce, Marika Kupková — Kurátorka, Oliver Staša — Developer, Alina Matějová — Grafická koncepce a design">
     <meta name="viewport" content="width=device-width">
 
-    <link rel="icon" href="/data/fav_day.png">
+    <link rel="icon" href="/data/fav.png">
     <link href="/css/main.css?v=0.1" rel="stylesheet">
 
     <script src="/js/jq.js" type="text/javascript"></script>

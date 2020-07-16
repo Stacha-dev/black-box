@@ -1,0 +1,33 @@
+html, body {cursor: crosshair; width: 100%; height: 100%; margin: 0; padding: 0; pointer-events: none; user-select: none; overflow: hidden;}
+#game, #score {z-index: 1000;}
+#protector {position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1001;}
+#fighter {position: fixed; bottom: 0; left: calc(50% - 4vh); width: 8vh; height: 16vh; z-index: 1003; background: url('../data/raketa.gif') center center; background-size: cover; animation: fly 2s infinite;}
+.ball {position: fixed; width: 0.4vh; height: 5vh; background: purple; z-index: 1002; animation: strela 1s infinite;}
+.trefen {opacity: 0.3; animation: wiggle 0.3s; filter: grayscale(100%);}
+.exploze {position: absolute; width: 10vh; height: 10vh; background: url('../data/bomb.gif') center center; background-size: cover; z-index: 1004; transform: translate(-50%, -50%);}
+.t {position: fixed; background: red; font-size: 5vh; word-break: keep-all; white-space: nowrap;}
+audio {display: none;}
+
+@keyframes strela {
+	0%		{background: #ff00bf;}
+	25%		{background: #3700ff;}
+	50%		{background: #fff700;}
+	75%		{background: #ff0044;}
+	100%  {background: #00ff88;}
+}
+
+@keyframes fly {
+	0%		{transform: translate(-0.2vh, -0.2vh);}
+	25%		{transform: translate(0.2vh, -0.2vh);}
+	50%		{transform: translate(0.2vh, 0.2vh);}
+	75%		{transform: translate(-0.2vh, 0.2vh);}
+	100%	{transform: translate(-0.2vh, -0.2vh);}
+}
+
+@keyframes wiggle {
+	0%		{transform: translateX(0);}
+	25%		{transform: translateX(-4%);}
+	50%		{transform: translateX(8%);}
+	75%		{transform: translateX(-6%);}
+	100%	{transform: translateX(0);}
+}

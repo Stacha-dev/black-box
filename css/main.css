@@ -2,3 +2,70 @@
 main css
 lady gaga 4 ever
 */
+
+/*
+import font
+*/
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700&display=swap');
+
+/*
+html, body
+globals
+*/
+html, body {margin: 0; padding: 0; font-family: 'Archivo', sans-serif; font-size: 2vh; color: black; background: black; overflow-y: hidden;}
+
+::-webkit-scrollbar-track {background: transparent;}
+::-webkit-scrollbar {width: 0.5vh; height: 0.5vh; background: transparent;}
+::-webkit-scrollbar-thumb {background: white;}
+
+::selection {color: white; background: black;}
+
+/*
+general funkce na kazdy div
+*/
+.fadeout {opacity: 0 !important; transform: translate(-50%, -50%) scale(0.9) !important;}
+.grabber {cursor: grab !important; user-select: none !important;}
+  .grabbed {cursor: grabbing !important;}
+  .grabbed::-webkit-scrollbar-thumb {background: #216543 !important;}
+
+/*
+loading
+*/
+.loading {position: fixed; z-index: 99;}
+  .loading.t, .loading.b {left: 0; width: 100vw; height: 0.25vh; background: linear-gradient(to right, transparent 90%, white 10%); background-size: 200% 100%; animation: loading-x 2s infinite linear;}
+  .loading.r, .loading.l {top: 0; width: 0.25vh; height: 100vh; background: linear-gradient(to bottom, transparent 90%, white 10%); background-size: 100% 200%; animation: loading-y 2s infinite linear;}
+  .loading.t {top: 0;}
+  .loading.r {right: 0; animation-delay: 1s;}
+  .loading.b {bottom: 0; animation-direction: reverse; animation-delay: -1s;}
+  .loading.l {left: 0; animation-direction: reverse;}
+
+@keyframes loading-x {
+    0%   {background-position-x: 200%;}
+    50% {background-position-x: 90%;}
+}
+@keyframes loading-y {
+    0%   {background-position-y: 200%;}
+    50% {background-position-y: 90%;}
+}
+
+/*
+centered divs
+& ini divy
+*/
+#content, .prj {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1); opacity: 1; transform-origin: center center;
+}
+#content {min-width: 100vw; height: 100%; overflow-x: auto; transition: all 1s cubic-bezier(0.33, 1, 0.68, 1);}
+  #content::-webkit-scrollbar-thumb {background: #242424;}
+.prj {width: 20vw; height: 35vh; background: #216543; user-select: none; z-index: 10;}
+
+/*
+projects of blackbox
+aphrodite lady seashell bikini
+*/
+.prj:hover {opacity: 0.5; background: violet; cursor: pointer;}
+.line {position: absolute; height: 2px; background: gray; z-index: 0; opacity: 0;}
+
+  /* pixelhelper prodluzuje obrazovku doprava */
+  #pixelhelper {width: 1px; height: 1px; position: absolute;}
