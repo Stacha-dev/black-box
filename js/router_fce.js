@@ -52,3 +52,31 @@ export function title(new_url) {
   });
 
 }
+
+
+
+// PREPINA MOZNOST SCROLLOVAT V DIVU
+////////////////////////////////////////////////////////////////////////////////
+export function disableScroll(elem, state) {
+
+  const noScroll = function(e){
+    e.preventDefault();
+  }
+
+  switch (state) {
+    case 'toggle':
+      if ($(elem).hasClass('disableScroll')) {
+        $(elem).off().removeClass('disableScroll');
+      } else {
+        $(elem).on('wheel', noScroll).addClass('disableScroll');
+      }
+    break;
+    case true:
+      $(elem).on('wheel', noScroll).addClass('disableScroll');
+    break;
+    case false:
+      $(elem).off().removeClass('disableScroll');
+    break;
+  }
+
+}

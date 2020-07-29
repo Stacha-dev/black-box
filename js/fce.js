@@ -9,6 +9,7 @@ lady gaga 4 ever
 // IMPORT fce
 ////////////////////////////////////////////////////////////////////////////////
 import {page} from './router.js';
+import {links, listeners} from './memex.js';
 import './grabber.js';
 
 /*
@@ -45,14 +46,17 @@ $(document).on('click touch', 'a', function(e){
 
 // ON RESIZE reload linek
 ////////////////////////////////////////////////////////////////////////////////
-/*
 $(window).on('resize', function(e){
 
+  // pokud vubec linky existuji
+  if ($('.line').length) {
+
     $('.line').remove();
-    setTimeout(function(){links();}, 1000);
+    links('resize');
+
+  }
 
 });
-*/
 
 // EASING
 jQuery.extend(jQuery.easing,
@@ -60,4 +64,23 @@ jQuery.extend(jQuery.easing,
 	easeOutExpo: function (x, t, b, c, d) {
 		return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
 	}
+});
+
+
+
+
+
+
+
+import {disableScroll} from './router_fce.js';
+// nejaky bobky
+$(document).on('click touch', '.toggleLog', function(){
+
+  const con = $('#console');
+
+  con.toggleClass('log');
+  disableScroll('#console', 'toggle');
+
+  con.animate({scrollTop: con.prop('scrollHeight') - con.innerHeight()}, 500);
+
 });

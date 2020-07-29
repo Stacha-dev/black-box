@@ -2,6 +2,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 import {loading, title, error} from './router_fce.js';
 import {memex} from './memex.js';
+import {log} from './loader.js';
 
 
 // PREPINAC STRANEK
@@ -70,7 +71,7 @@ export function page(url) {
   setTimeout(function(){
 
         $('#content').remove();
-        $("body").append('<div id="content" class="fadeout"></div>');
+        $("body").append($('<div>', {id: 'content', class: 'fadeout'}));
 
         $.get(file, function(res){
 
@@ -79,36 +80,109 @@ export function page(url) {
 
             var obj = JSON.parse(res);
 
-              $("#content").append(obj.html);
-              $('#content').removeClass('fadeout');
-              title(url);
+            // preload obrazku
+            if (obj.imgs.length) {
 
-            try {
+              try {
 
-              switch (obj.headder) {
+                // preload images
+                var imgs = obj.imgs,
+                    loaded = [];
 
-                case 'memex':
-                  memex();
-                break;
+                log({"images": "loading started"});
 
-                default:
-                break;
+                // for each image preload
+                $.each(imgs, function(i) {
+
+                  // url to image
+                  var url = imgs[i];
+
+                  // vytvori preload container
+                  (function(url, loaded) {
+
+                      // vytvori image a narve ho url
+                      var img = new Image();
+                      img.src = url;
+
+                        log({"url": url, "msg": "loading started"});
+
+                      // on image loaded oznac ho jako loadnuty
+                      img.onload = function() {
+
+                        log({"url": url, "msg": "loaded"});
+                        // zapsat jako vyreseno
+                        loaded.resolve();
+
+                      };
+
+                  })(url, loaded[i] = $.Deferred());
+                });
+
+                // az sou vsechny obrazky nacteny
+                $.when.apply($, loaded).done(function() {
+
+                  log({"images": "loaded"});
+
+                    // loadne se content
+                    $("#content").append(obj.html);
+                    title(url);
+
+                        // load obsahu animaci podle headderu
+                        try {
+
+                          switch (obj.headder) {
+
+                            case 'memex':
+                              memex();
+                              log({"memex": "loaded"});
+                            break;
+
+                            default:
+                            break;
+                          }
+
+                        } catch (e) {
+
+                          console.log(e);
+                          error('intro error');
+
+                        }
+
+                    // finish loading of log ==> ALSO LOADS CONTENT!!
+                    log({"finish": true});
+
+                });
+
+              } catch (e) {
+
+                console.log(e);
+                error('preload error');
+
               }
 
-            } catch (e) {
-              error('intro error');
+            // pokud nejsou zadne obrazky k preloadu
+            } else {
+
+                // loadne se content
+                $("#content").append(obj.html);
+                $('#content').removeClass('fadeout');
+                title(url);
+                loading('off');
+
             }
 
           // JSON je rozbitej
           } catch (e) {
+
+              console.log(e);
+
               if (e instanceof SyntaxError) {
                   error('data not json');
               } else {
                   error('general error');
               }
-          }
 
-          loading('off');
+          }
 
         });
 

@@ -1,6 +1,11 @@
+import {log} from './loader.js';
+
 // MEMEX
 // udela boxy pro umco ve forme memexu
-export function memex() {
+export function memex(odkaz) {
+
+  log({"memex": "loading started"});
+  log({"projects": "loading started"});
 
   // constants
         // kolik je projektu
@@ -11,15 +16,18 @@ export function memex() {
                "w": $(window).width()},
         obj = {"h": $('.prj').height(),
                "w": $('.prj').width()},
-        // tol, t = tolerance
-        tol = 3,
+        // tol = hv tolerance, t = obj size tolerance
+        tol = 2,
         t = {"w": Math.floor(obj.w/win.w*100),
              "h": Math.floor(obj.h/win.h*100)},
         // limit je kolik % je odskok z kraje obrazovky
         limit = {"x": t.w/2,
                  "y": t.h/2},
-        // pocet projektu na stranku
-        pns = 100/t.w;
+        // pocet projektu na stranku, multiplier
+        pns = 100/t.w,
+        pnsMlt = 1.2,
+        // limit for trying to find chords
+        passLimit = projects*100*pnsMlt;
 
       // pole pro vysledne koordinaty
   var ress = [],
@@ -30,11 +38,11 @@ export function memex() {
 
 
   // pokud je vic nez X projektu, zvetsit obrazovku
-  if (projects > pns) {
-    minWidth = pns*40;
+  if (projects > pns/pnsMlt) {
+    minWidth = projects/pns*100/pnsMlt;
     $('#content').addClass('grabber');
-    $('#content').append('<div id="pixelhelper"></div>');
-      $('#pixelhelper').css({left: minWidth+'vw'});
+    // +10 ==> side panel
+    $('#content').prepend($('<div>', {id: 'pixelhelper', css: {left: minWidth+10+'vw'}}));
   }
 
 
@@ -42,9 +50,9 @@ export function memex() {
   function chords() {
 
         // -10 + 10 ==> vlevo aby byl odskok
-    var x = Math.floor(Math.random()*(minWidth-10-limit.x*2))+limit.x+10,
-        // 85 + 10 ==> odskok 10vh shora kvuli liste, zespoda 5vh kvuli vzhledu
-        y = Math.floor(Math.random()*(85-limit.y*2))+limit.y+10;
+    var x = Math.floor(Math.random()*(minWidth-10-limit.x))+limit.x/2+10,
+        // 75 + 15 ==> odskok shora kvuli liste, a zespoda kvuli vzhledu
+        y = Math.floor(Math.random()*(75-limit.y))+limit.y/2+15;
 
     return {"x": x, "y": y};
 
@@ -70,13 +78,37 @@ export function memex() {
       }
 
     // posle vysledek zpet do whilu
-    // pass ==> pokud while jede uz po 100. pusti i spatne vysledky
-    if (faulty == true && pass < 100) {
+    // pass ==> pokud while jede uz po XXX. pusti i spatne vysledky // 333
+    if (faulty == true && pass < passLimit) {
       return false;
     } else {
       ress.push({"x": pos.x, "y": pos.y});
+      if (pass == passLimit) {
+        log({"fce": "chord_tester", "chords": ress[ress.length-1], "passed": false, "msg": "failed during ["+pass+"] tries, setting chords anyway"});
+      } else {
+        log({"fce": "chord_tester", "chords": ress[ress.length-1], "passed": true, "msg": "passed at ["+pass+"] try"});
+      }
       return true;
     }
+
+  }
+
+
+  // load sidekick obrazky
+  function loadSidekicks(imgs) {
+
+    // vars
+    var base = 3,
+        mpl = {"l": Math.random()<0.5?(-1):1,
+               "t": Math.random()<0.5?(-1):1},
+        rand = {"x": mpl.l*(base+Math.random()*base+base),
+                "y": mpl.t*(base+Math.random()*base/2)};
+
+    // pro oba sidekick obrazky v projektu
+    $(imgs[0]).css({marginLeft: rand.x+'vh', marginTop: rand.y+'vh'}).removeClass('fadeout');
+    $(imgs[1]).css({marginLeft: rand.x*(-1)+'vh', marginTop: rand.y*(-1)+'vh'}).removeClass('fadeout');
+
+    log({"fce": "sidekick_imgs", "chords": rand});
 
   }
 
@@ -86,7 +118,9 @@ export function memex() {
 
     var prj = $(this),
         pos = chords(),
-        pass = 0;
+        pass = 0,
+        rand = {"delay": (-1)*(5000+Math.random()*5000)/1000,
+                "dur": (15000+Math.random()*5000)/1000};
 
     // nastavi unikatni souradnice
     while (chord_tester(pos, pass) == false) {
@@ -95,16 +129,17 @@ export function memex() {
     }
 
     // nastaveni koordinatu projektu
-    prj.css({top: pos.y+'vh', left: pos.x+'vw'});
-    //setTimeout(function(){
+    prj.css({top: pos.y+'vh', left: pos.x+'vw', 'animation-delay': rand.delay+'s', 'animation-duration': rand.dur+'s'});
     prj.removeClass('fadeout');
-    //}, itt*(1/projects)*1000);
+
+    loadSidekicks(prj.find('.sidekick'));
 
     itt++;
 
         // po poslednim umisteni projektu spustit linkovani
         if (itt == projects) {
-          links();
+          log({"projects": "loaded"});
+          links('memex');
         }
 
   });
@@ -115,10 +150,22 @@ export function memex() {
 }
 
 
-
 // LINKS
 // vytvoreni linku (car) mezi projektama
-export function links() {
+export function links(call) {
+
+    log({"connections": "loading started"});
+
+    // constants
+    var net = [],
+        netKey = [],
+        project = [],
+        itt = 0;
+
+    // if resize, make <br> in log :D ==> for design
+    if (call == 'resize') {
+        $('#console').append('<br><br><br>');
+    }
 
     // funkce na testovani duplicity konexi
     function inNet(match) {
@@ -135,7 +182,22 @@ export function links() {
         return false;
     }
 
-    var project = [];
+    // vraci klice pro dane ID projektu
+    function matchKeywords(id) {
+
+      var keywords = [];
+      $.each(netKey, function(i, tag){
+
+        if (tag[0] == id) {
+          keywords.push(tag[1]);
+        }
+
+      });
+
+      return keywords.join(", ");
+
+    }
+
     // nahraje tagy a pozice z kazdeho projektu
     $('.prj').each(function() {
 
@@ -150,12 +212,13 @@ export function links() {
           // nahraje do objektu vsechny udaje o projektu
           project.push({"id": id, "obj": obj, "tag": tags.split(",")});
 
+          log(project[project.length-1]);
+
     });
 
     // create array of connections
     // console.log(project);
     // projede vsechny projekty
-    var net = [];
     $.each(project, function(i, pr){
 
       // projede vsechny tagy v projektu
@@ -179,6 +242,12 @@ export function links() {
                 net.push(match);
               }
 
+              // id = pozice v net poli, keyword ve kterem se shoduji
+              netKey.push([project[i].id+project[li].id, tg]);
+
+              // to log
+              log(match);
+
             }
 
           }
@@ -189,16 +258,17 @@ export function links() {
 
     });
 
-    // pro kazdou konexi vytvori cary mezi nima
-    var itt = 0;
+    //console.log(netKey);
 
+    // pro kazdou konexi vytvori cary mezi nima
     $.each(net, function(){
 
+      //console.log(net[itt][0], net[itt][1]);
       // najde o kterou polozku v poli se jedna a vraci objekt
       var spoj = $(this),
           obj1 = project.find(o => o.id === spoj[0]),
           obj2 = project.find(o => o.id === spoj[1]),
-          limit = 5,
+          limit = 3,
           lim = {"x1": obj1.obj.w/limit,
                  "y1": obj1.obj.h/limit,
                  "x2": obj2.obj.w/limit,
@@ -210,26 +280,64 @@ export function links() {
                   "x2": Math.random() * (obj2.obj.w - lim.x2*2) + (obj2.obj.x - obj2.obj.w/2) + lim.x2,
                   "y2": Math.random() * (obj2.obj.h - lim.y2*2) + (obj2.obj.y - obj2.obj.h/2) + lim.y2};
 
-      $('#content').append('<div style="position: absolute; top: '+chor.y1+'px; left: '+chor.x1+'px; width: 3px; height: 3px; background: red; z-index: 999;"></div>');
-      $('#content').append('<div style="position: absolute; top: '+chor.y2+'px; left: '+chor.x2+'px; width: 3px; height: 3px; background: red; z-index: 999;"></div>');
-
-      // spocita delku cary a uhel
+      // spocita atributy cary, i delku a uhel (len+ang)
       var len = Math.sqrt(((chor.x2-chor.x1)*(chor.x2-chor.x1))+((chor.y2-chor.y1)*(chor.y2-chor.y1))),
-          ang = Math.atan2((chor.y1-chor.y2),(chor.x1-chor.x2))*(180/Math.PI);
+          attr = {"t": ((chor.y1+chor.y2)/2),
+                  "l": ((chor.x1+chor.x2)/2-len/2),
+                  "len": len,
+                  "ang": Math.atan2((chor.y1-chor.y2),(chor.x1-chor.x2))*(180/Math.PI),
+                  "delay": (-1)*Math.random()*5,
+                  "dur": 2+Math.random()*3},
+          spojnice = net[itt][0]+net[itt][1],
+          keys = matchKeywords(spojnice);
+
+      log({attr, keys});
+
+      // repair angle
+      if (attr.ang < -90) {
+        attr.ang = attr.ang+180;
+      } else if (attr.ang > 90) {
+        attr.ang = attr.ang-180;
+      }
 
       // vykresli caru
       $('#content')
       .append($('<div>',{class: 'line',
-                         css:   {top:       ((chor.y1+chor.y2)/2)+'px',
-                                 left:      ((chor.x1+chor.x2)/2-len/2)+'px',
-                                 width:     len+'px',
-                                 transform: "rotate("+ang+"deg)"}
+                         //id: +net[itt][0]+net[itt][1],
+                         css:   {top: attr.t+'px',
+                                 left: attr.l+'px',
+                                 width: attr.len+'px',
+                                 transform: "rotate("+attr.ang+"deg)",
+                                 "animation-delay": +'s',
+                                 "animation-duration": attr.dur+'s'
+                               },
+                          html: '<div class="keys">'+keys+'</div>'
                         })
-      .delay(itt*100).animate({opacity: 1}, 1000));
+      .delay(itt*100).animate({opacity: 1}, 1000, function(){}));
 
-       itt++;
+      // zakonci log po posledni lince
+      if (itt == net.length-1) {
+
+        log({"connections": "loaded"});
+
+        // pokud dochazi k repaintu linek kvuli resize okna
+        if (call == 'resize') {
+          log({"finish": true});
+        }
+
+      }
+
+      itt++;
 
     });
 
+
+}
+
+
+
+
+// ??
+export function listeners() {
 
 }

@@ -99,5 +99,9 @@ $(function(){
 
   });
 
+  // pojistka kdybych zacal scrolovat koleckem/touchpadem, zastavi se animace
+  $(document).on('wheel', '.grabber', function() {
+    $(this).stop();
+  });
 
 });
