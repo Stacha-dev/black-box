@@ -4,16 +4,8 @@ $(function(){
   // constants
   var grabMov = false,
       curMov = {"x": 0, "y": 0},
-      movedMov = {"x": 0, "y": 0},
       win = {"h": $(window).height(),
-             "w": $(window).width()},
-      timestampMov = 0;
-  // smoothing nastavuje silu dojezdu setrvacnosti pohybu
-  const smoothingMov = 2;
-
-  // global val pro smoothing
-  window.dir = {"x": 0, "y": 0};
-  window.speed = {"x": 0, "y": 0};
+             "w": $(window).width()};
 
   // z index na pocet movables
   window.zindex = $('.moveable').length+1;
@@ -48,31 +40,6 @@ $(function(){
         moving.css({top: moveY});
       }
 
-          // smoothing
-          var now = Date.now(),
-              curr = {"x": movement.x,
-                      "y": movement.y};
-
-          var dt = now-timestampMov;
-          var dist = {"x": Math.abs(curr.x-movedMov.x),
-                      "y": Math.abs(curr.y-movedMov.y)};
-          window.speed = {"x": dist.x/dt*win.w/100*smoothingMov/1.5,
-                          "y": dist.y/dt*win.h/100*smoothingMov/1.5};
-
-
-          window.dir = {"x": 1, "y": 1};
-          if (movedMov.x >= curr.x) {
-            window.dir.x = -1;
-          }
-          if (movedMov.y >= curr.y) {
-            window.dir.y = -1;
-          }
-
-          console.log(dist, movedMov, curr, window.dir, window.speed);
-
-          movedMov = curr;
-          timestampMov = now;
-
     }
 
   };
@@ -81,23 +48,6 @@ $(function(){
   const outMov = function(e) {
 
     grabMov = false;
-
-      // animovat dojezd pokud je mys pustena behem pohybu
-      if (window.speed.x > 1 || window.speed.y > 1) {
-
-            // soucasna pozice
-        var pos = $('.moving').position(),
-            grabpos = {"x": e.pageX || e.originalEvent.touches[0].pageX,
-                       "y": e.pageY || e.originalEvent.touches[0].pageY},
-            // delka animace dojezdu
-            dojezd = (window.speed.x+window.speed.y)*smoothingMov*5;
-
-        // animace dojezdu
-        $('.moving').animate({top: grabpos.y+window.dir.y*window.speed.y, left: grabpos.x+window.dir.x*window.speed.x}, dojezd, 'easeOutExpo');
-        // reset speed
-        window.speed = {"x": 0, "y": 0};
-
-      }
 
       // odstrani grabbed rucku
       $('.moveable').removeClass('moving');
