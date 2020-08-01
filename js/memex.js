@@ -2,7 +2,7 @@ import {log} from './loader.js';
 
 // MEMEX
 // udela boxy pro umco ve forme memexu
-export function memex(odkaz) {
+export function memex() {
 
   log({"memex": "loading started"});
   log({"projects": "loading started"});
@@ -25,9 +25,10 @@ export function memex(odkaz) {
                  "y": t.h/2},
         // pocet projektu na stranku, multiplier
         pns = 100/t.w,
-        pnsMlt = 1.2,
+        pnsMlt = 1.1,
         // limit for trying to find chords
-        passLimit = projects*100*pnsMlt;
+        //438 = rekl sem kaji at rekne nahodne cislo
+        passLimit = projects*43.8*pnsMlt;
 
       // pole pro vysledne koordinaty
   var ress = [],
@@ -49,10 +50,16 @@ export function memex(odkaz) {
   // generovani koordinatu
   function chords() {
 
+    var seed = Math.random()<0.5?(-1):1;
         // -10 + 10 ==> vlevo aby byl odskok
     var x = Math.floor(Math.random()*(minWidth-10-limit.x))+limit.x/2+10,
+        /*
+        without seed
         // 75 + 15 ==> odskok shora kvuli liste, a zespoda kvuli vzhledu
         y = Math.floor(Math.random()*(75-limit.y))+limit.y/2+15;
+        */
+        // change top/bot acc to seed == part random
+        y = (Math.floor(Math.random()*(20-limit.y))+limit.y/2+10)*seed+50;
 
     return {"x": x, "y": y};
 
@@ -83,8 +90,8 @@ export function memex(odkaz) {
       return false;
     } else {
       ress.push({"x": pos.x, "y": pos.y});
-      if (pass == passLimit) {
-        log({"fce": "chord_tester", "chords": ress[ress.length-1], "passed": false, "msg": "failed during ["+pass+"] tries, setting chords anyway"});
+      if (pass > passLimit-2) {
+        log({"fce": "chord_tester", "chords": ress[ress.length-1], "passed": false, "msg": "failed at ["+pass+"] tries, abort & setting random chords"});
       } else {
         log({"fce": "chord_tester", "chords": ress[ress.length-1], "passed": true, "msg": "passed at ["+pass+"] try"});
       }
@@ -105,10 +112,10 @@ export function memex(odkaz) {
                 "y": mpl.t*(base+Math.random()*base/2)};
 
     // pro oba sidekick obrazky v projektu
-    $(imgs[0]).css({marginLeft: rand.x+'vh', marginTop: rand.y+'vh'}).removeClass('fadeout');
-    $(imgs[1]).css({marginLeft: rand.x*(-1)+'vh', marginTop: rand.y*(-1)+'vh'}).removeClass('fadeout');
+    $(imgs[0]).css({marginLeft: rand.x+'vh', marginTop: rand.y+'vh'});
+    $(imgs[1]).css({marginLeft: rand.x*(-1)+'vh', marginTop: rand.y*(-1)+'vh'});
 
-    log({"fce": "sidekick_imgs", "chords": rand});
+    log({"fce": "sidekick_img", "chords": rand});
 
   }
 
@@ -130,7 +137,6 @@ export function memex(odkaz) {
 
     // nastaveni koordinatu projektu
     prj.css({top: pos.y+'vh', left: pos.x+'vw', 'animation-delay': rand.delay+'s', 'animation-duration': rand.dur+'s'});
-    prj.removeClass('fadeout');
 
     loadSidekicks(prj.find('.sidekick'));
 
@@ -164,7 +170,7 @@ export function links(call) {
 
     // if resize, make <br> in log :D ==> for design
     if (call == 'resize') {
-        $('#console').append('<br><br><br>');
+        $('#console').append('<br><br>');
     }
 
     // funkce na testovani duplicity konexi
@@ -291,7 +297,7 @@ export function links(call) {
           spojnice = net[itt][0]+net[itt][1],
           keys = matchKeywords(spojnice);
 
-      log({attr, keys});
+      log({attr, "match_tags": keys});
 
       // repair angle
       if (attr.ang < -90) {
@@ -334,10 +340,6 @@ export function links(call) {
 
 }
 
-
-
-
-// ??
-export function listeners() {
-
-}
+/*
+* praise lady gaga
+*/

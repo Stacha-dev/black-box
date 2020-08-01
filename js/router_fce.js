@@ -2,6 +2,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 export function error(e) {
 
+  //log({"error": true, "msg": e});
   alert(e);
 
 }
@@ -16,6 +17,12 @@ export function loading(e) {
 
     case 'on':
 
+      // blinder zaslepi klikani na html pred fade-in
+      if (!$('#blinder').length) {
+        $('body').append($('<div>', {id: 'blinder'}));
+      }
+
+      // zapina loading bary
       if (!$('#loading').length) {
         $('body').append('<div class="loading t"></div><div class="loading r"></div><div class="loading b"></div><div class="loading l"></div>');
           $('.loading').stop(true, false).fadeIn(100);
@@ -25,6 +32,12 @@ export function loading(e) {
 
     case 'off':
 
+      // blinder zmizi
+      if ($('#blinder').length) {
+        $('#blinder').remove();
+      }
+
+      // loading zmizi
       $('.loading').stop(true, false).fadeOut(500,
       function() {
         $('.loading').remove();

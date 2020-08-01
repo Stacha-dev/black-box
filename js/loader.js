@@ -1,4 +1,5 @@
 import {loading, disableScroll} from './router_fce.js';
+import {loadPosts} from './blackbox.js';
 
 // firestarter
 var logCount = 0;
@@ -68,7 +69,7 @@ export function log(data) {
           logCount = 0;
 
           // napise zakonceni konzole
-          con.append('<br><br><div class="menuTop">ČERNÁ SKŘÍŇKA / BLACK BOX<div class="tools"><span class="toggleLog">☷</span> ☰ EN</div></div>');
+          con.append('<br><br><div class="menuTop">ČERNÁ SKŘÍŇKA / BLACK BOX<div class="tools"><span class="toggleLog">›_</span> ☷ <a href="/memex">☒</a> EN</div></div>');
           con.scrollTop(con.prop('scrollHeight') - con.innerHeight());
 
           // disable scrolling
@@ -88,6 +89,27 @@ export function log(data) {
 
         }, totalDelay+100);
 
+      // on finish loading blackbox
+      } else if (data.blackbox == "loaded") {
+
+          // zacne animovat posty do pridelenych souradnic
+          loadPosts();
+
+          // pokud probihala animace z prechozi stranky
+          var mainPic = $('.mainPic');
+          if (mainPic.length) {
+            totalDelay += 1000;
+
+            setTimeout(function(){
+              // odstrani obrazek po skonceni logu, i jeho parent
+              // cas max 300 ==> 2×100 trvaji animovat .info divy
+              mainPic.fadeOut(300, function(){
+                $('#shadowMaster').remove();
+              });
+            }, totalDelay);
+
+          }
+
       }
 
   // write line to log
@@ -100,5 +122,7 @@ export function log(data) {
 
   // itt
   logCount++;
+
+  return totalDelay;
 
 }

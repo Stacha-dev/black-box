@@ -7,8 +7,8 @@ $(function(){
       win = {"h": $(window).height(),
              "w": $(window).width()};
 
-  // z index na pocet movables
-  window.zindex = $('.moveable').length+1;
+  // z index default na 10, blackbox() vyzaduje 3+
+  window.zindex = 10;
 
   // id objektu kterym hybu
   window.moveId = false;
@@ -23,6 +23,7 @@ $(function(){
                  "h": moving.height(),
                  "w": moving.width()};
 
+    // overuje ze sme v pohybu a ze sme nad spravnym divem
     if (grabMov && window.moveId == moving.attr('id')) {
 
       var movement = {"x": e.pageX || e.originalEvent.touches[0].pageX,
@@ -32,11 +33,12 @@ $(function(){
       var moveX = movement.x+curMov.x,
           moveY = movement.y+curMov.y;
 
-      // ochrana proti zahozeni objektu mimo obrazovku
-      if (moveX < win.w-mover.w/2 && moveX > mover.w/2) {
+      // ochrana proti zahozeni objektu mimo obrazovku ==> zastavi v pulce objektu
+      // zastavit na kraji objektu ==> if (moveX < win.w-mover.w/2 && moveX > mover.w/2)
+      if (moveX < win.w && moveX > 0) {
         moving.css({left: moveX});
       }
-      if (moveY < win.h-mover.h/2 && moveY > mover.h/2) {
+      if (moveY < win.h && moveY > 0) {
         moving.css({top: moveY});
       }
 
@@ -61,29 +63,40 @@ $(function(){
   // zacatek grabu
   $(document).on('mousedown touchstart', '.moveable', function(e) {
 
-    // zastavi animovani, pokud se deje
-    $(this).stop();
-    e.preventDefault();
-
     // pozice
-    var mover = {"pos": $(this).position(),
-                 "h": $(this).height(),
-                 "w": $(this).width()},
+    var obj = $(this),
+        mover = {"pos": obj.position(),
+                 "h": obj.height(),
+                 "w": obj.width()},
         movement = {"x": e.pageX || e.originalEvent.touches[0].pageX,
                     "y": e.pageY || e.originalEvent.touches[0].pageY};
 
-    window.moveId = $(this).attr('id');
 
+    // zastavi animovani, pokud se deje
+    obj.stop();
+    // prevent default pro touch eventy
+    // e.preventDefault();
+
+    // zabezpecujici id
+    window.moveId = obj.attr('id');
+
+    // pocatecni pozice
     curMov.x = mover.pos.left + mover.w/2 - movement.x;
     curMov.y = mover.pos.top + mover.h/2 - movement.y;
 
     // potvrzuje grab
     grabMov = true;
+
+    // zvysuje z-index oproti poslednimu kliknutemu
     window.zindex++;
 
     // zapne grabbed rucku
-    $(this).addClass('moving');
-    $(this).css({"z-index": window.zindex});
+    obj.addClass('moving');
+
+    // pokud se nejedna o info ktere ma z-index ve vesmiru, preda z-index
+    //if (!obj.hasClass('info')) {
+      obj.css({"z-index": window.zindex});
+    //}
 
       // event listenery
       $(document).on('mousemove touchmove', moveMov);

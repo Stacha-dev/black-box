@@ -2,6 +2,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 import {loading, title, error} from './router_fce.js';
 import {memex} from './memex.js';
+import {blackbox, openBox} from './blackbox.js';
 import {log} from './loader.js';
 
 
@@ -11,16 +12,32 @@ export function page(url) {
 
   loading('on');
 
+  // vars
+  var file,
+      pointers,
+      memexPg = false,
+      blackboxPg = false;
+
+  // udela pole z url podle /
   if (url != null) {
     var path = url.split('/');
-    var page = path[1];
   }
 
-  switch (url) {
+  // main router switch
+  switch (path[1]) {
 
 
     default: case 'memex': // default ==> homepage
-      var file = '/php/page/memex.php';
+      var file = '/php/page/memex.php',
+          memexPg = true;
+    break;
+
+
+
+    case 'prj': // otevreny projekt
+      var file = '/php/page/blackbox.php',
+          blackboxPg = url;
+          pointers = {"prjId": path[2]};
     break;
 
 
@@ -59,11 +76,23 @@ export function page(url) {
   // POKUD JE UVNITR STRANKY #CONTENT, UDELAT FADEOUT
   var delay = 0;
   if ($('#content').length) {
-    $('#content').addClass('fadeout');
+
+    // podle toho kterou stranku animuju, takova animace se zapne
+    if (blackboxPg) {
+
+      // opozdi ostatni funkce
+      delay = 500;
+
+      openBox(blackboxPg);
+
+    }
+
+
+    $('#content').addClass('fadeoutUp');
 
     var div = $('#content');
       var dur = div.css('transition-duration');
-      var delay = (dur.substring(0, dur.length-1))*1000;
+          delay += (dur.substring(0, dur.length-1))*1000;
 
   }
 
@@ -73,7 +102,10 @@ export function page(url) {
         $('#content').remove();
         $("body").append($('<div>', {id: 'content', class: 'fadeout'}));
 
-        $.get(file, function(res){
+        // make <br> in log :D ==> for design
+        $('#console').append('<br><br>');
+
+        $.post(file, pointers, function(res){
 
           // OBSAH
           try {
@@ -135,6 +167,11 @@ export function page(url) {
                             case 'memex':
                               memex();
                               log({"memex": "loaded"});
+                            break;
+
+                            case 'blackbox':
+                              blackbox();
+                              log({"blackbox": "loaded"});
                             break;
 
                             default:

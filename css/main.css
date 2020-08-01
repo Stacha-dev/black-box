@@ -15,7 +15,7 @@ globals
 * {user-select: none;}
 html, body {margin: 0; padding: 0; font-family: 'FKG', monospace; font-size: 2.5vh; color: black; background: white; overflow-y: hidden;}
 
-a, a:visited {color: blue; text-decoration: underline;}
+a, a:visited {color: black; text-decoration: none;}
 
 ::-webkit-scrollbar-track {background: transparent;}
 ::-webkit-scrollbar {width: 0.5vh; height: 0.5vh; background: transparent;}
@@ -24,12 +24,25 @@ a, a:visited {color: blue; text-decoration: underline;}
 ::selection {color: white; background: black;}
 
 /*
-general funkce na kazdy div
+EaseOutQuart
+cubic-bezier(0.25, 1, 0.5, 1)
+EaseOutVyjedepres100%
+cubic-bezier(0.33, 1.33, 0.64, 1)
+*/
+
+/*
+general funkce na divy
 */
 .fadeout {opacity: 0 !important; transform: translate(-50%, -50%) scale(0.9) !important;}
+.fadeoutUp {opacity: 0 !important; transform: translate(-50%, -50%) scale(1.1) !important;}
+
 .grabber {cursor: grab !important; user-select: none !important;}
   .grabbed {cursor: grabbing !important;}
   .grabbed::-webkit-scrollbar-thumb {background: blue !important;}
+
+.moveable {cursor: move !important; user-select: none !important;}
+  .moveable img {pointer-events: none !important;}
+  .moving {transition-property: none !important;}
 
 /*
 loading
@@ -55,49 +68,20 @@ loading
 centered divs
 & ini divy
 */
-#content, .prj, .prj img {
+/* content of page DIV, project DIV, img in project DIV, all project IMAGES */
+#content, .prj, .prj img, .post {
   position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(1); opacity: 1; transform-origin: center center;
 }
-#content {min-width: 100vw; height: 100%; overflow-x: auto; transition: all 1s cubic-bezier(0.33, 1, 0.68, 1);}
+/* content of page DIV */
+#content {min-width: 100vw; height: 100%; overflow-x: auto; transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);}
   #content::-webkit-scrollbar-thumb {background: #242424;}
-.prj {min-width: 20vw; min-height: 35vh; z-index: 10;} /* animation: fly 40s infinite; */
-.prj * {pointer-events: none;}
-  .prj a {pointer-events: all;}
-
-/*
-projects of blackbox
-aphrodite lady seashell bikini
-*/
-.prj:hover {cursor: pointer; z-index: 99;}
-.line {position: absolute; height: 0.15vh; background: black; z-index: 0; opacity: 0.5;} /* animation: polet 5s infinite; */
-@keyframes polet {
-  0%    {opacity: 1;}
-  50%   {opacity: 0.5;}
-  100%  {opacity: 1;}
-}
-  .keys {width: 100%; text-align: center; opacity: 0; transition: opacity 0.3s ease; padding-top: 0.5vh;}
-  .line:hover .keys {opacity: 1;}
-.prj img {width: auto; height: auto; max-height: 25vh; max-width: 25vh; transition: all 1s cubic-bezier(0.33, 1, 0.68, 1); /*animation: fly infinite; animation-play-state: running;*/}
-@keyframes fly {
-  0%    {transform: translate(-50%, -50%);}
-  25%    {transform: translate(-48%, -51%);}
-  50%   {transform: translate(-52%, -49%);}
-  75%   {transform: translate(-53%, -52%);}
-  100%  {transform: translate(-50%, -50%);}
-}
-  .prj img:first-child {z-index: 98;}
-  .prj:hover img {transform: translate(-50%, -50%) scale(1.1);}
-  .prj .title {position: absolute; bottom: 0; left: 50%; transform: translate(-50%, 0%); background: white; padding: 0.25vh; word-break: keep-all; white-space: nowrap; z-index: 99;}
-
-  /* pixelhelper prodluzuje obrazovku doprava */
-  #pixelhelper {width: 1px; height: 1px; position: absolute;}
 
 
 /*
 konzole nahore pri loadingu
 */
-#console {position: fixed; top: 0; left: 0; width: 98vw; height: 40vh; margin-top: -36.75vh; overflow-y: scroll; padding: 1vh 2vh; background: white; color: black; border-bottom: 0.15vh solid black; transition: all 0.5s ease; z-index: 99;}
+#console {position: fixed; top: 0; left: 0; width: 98vw; height: 40vh; margin-top: -36.75vh; overflow-y: scroll; padding: 1vh 2vh; background: white; color: black; border-bottom: 0.15vh solid black; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 99;}
   #console.log {background: black; color: white; margin-top: 0;}
   #console ul {margin: 0; padding: 0; margin-left: 3vh;}
   #console li {list-style-type: "› "; margin: 0.5vh auto;}
@@ -107,10 +91,92 @@ konzole nahore pri loadingu
   .s {color: green;}
   .b, .null {color: red;}
   /* button to switch console modes*/
-  .toggleLog {color: blue; cursor: pointer;}
-    #console.log .toggleLog {color: yellow;}
+  #console .toggleLog {color: black; cursor: pointer; transition: all 0.5s cubic-bezier(0.33, 1.33, 0.64, 1);}
+    #console.log a, #console.log .toggleLog {color: white;}
+
+/* menu TOP ==> in console */
+.menuTop .tools {float: right; margin-right: 0vh;}
+
+/* width of blocks in console acc to side menu */
+#console ul, .menuTop {/*width: 90vw;*/}
+/* blinder ==> pri nacitani zaslepi vlozene html, aby se na nej nedalo klikat*/
+#blinder {position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 20;}
+
 
 /*
-menu TOP ==> in console
+projects of blackbox
+aphrodite lady seashell bikini
 */
-.menuTop .tools {float: right; margin-right: 0vh;}
+.prj {min-width: 20vw; min-height: 35vh; z-index: 10;} /* animation: fly 40s infinite; */
+.prj * {pointer-events: none;}
+.prj a {pointer-events: all;}
+
+.prj:hover {cursor: pointer; z-index: 99;}
+  #shadowMaster {cursor: auto; z-index: 999;}
+.line {position: absolute; height: 0.15vh; background: black; z-index: 0; transition: all 0.3s cubic-bezier(0.33, 1.33, 0.64, 1);} /* animation: polet 5s infinite; */
+@keyframes polet {
+  0%    {opacity: 1;}
+  50%   {opacity: 0.5;}
+  100%  {opacity: 1;}
+}
+  .keys {width: 100%; text-align: center; opacity: 0; transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1); padding-top: 0.5vh; color: blue;}
+  .line:hover .keys {opacity: 1;}
+  .line:hover {z-index: 99; background: blue;}
+.prj img {width: auto; height: auto; max-height: 25vh; max-width: 25vh; transition: all 1s cubic-bezier(0.33, 1.33, 0.64, 1); /*animation: fly infinite; animation-play-state: running;*/}
+@keyframes fly {
+  0%    {transform: translate(-50%, -50%);}
+  25%    {transform: translate(-48%, -51%);}
+  50%   {transform: translate(-52%, -49%);}
+  75%   {transform: translate(-53%, -52%);}
+  100%  {transform: translate(-50%, -50%);}
+}
+  .prj img:first-child {z-index: 98;}
+  .prj:hover img, #shadowMaster img {transform: translate(-50%, -50%) scale(1.1);}
+  .prj .title {position: absolute; bottom: 0; left: 50%; transform: translate(-50%, 0%); background: white; padding: 0.25vh; word-break: keep-all; white-space: nowrap; z-index: 99;}
+
+    /* animace pri presunu do blackbox() */
+    .mainPic {transition: all 1s cubic-bezier(0.33, 1.33, 0.64, 1);}
+    .sidekick, .prj .title {transition: all 0.3s cubic-bezier(0.33, 1.33, 0.64, 1);}
+    .sidekick.away, .prj .title.away {transform: translate(-50%, -50%) scale(0.3) !important; margin: 0 !important;}
+                    .prj .title.away {z-index: 0 !important; bottom: 50% !important;}
+
+  /* pixelhelper prodluzuje obrazovku doprava */
+  #pixelhelper {width: 1px; height: 1px; position: absolute;}
+
+
+/*
+pics in project
+ju-das juda -a -as
+*/
+#blackbox {position: absolute; top: 0; left: 0; overflow: hidden; width: 100vw; height: 100vh;}
+.post {z-index: 1; transition: all 1s cubic-bezier(0.33, 1.33, 0.64, 1);}
+.post img {max-width: 20vw; max-height: 30vh; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
+  /* rozmery pro zvetsenou verzi */
+  .post.large img, .mainPic.large {max-width: 60vw; max-height: 70vh;}
+                   .mainPic.large {transform: translate(-50%, -50%) scale(1) !important; margin-top: -0.25vh;}
+
+  /* ikona na zvetseni obrazku v projektu */
+  .post .num, .bigPost {position: absolute; top: 100%; left: 0; margin-top: -5.25vh; margin-left: 1vh; padding: 1vh; background: white; font-size: 1.5vh;}
+              .bigPost {left: auto; right: 0; margin-left: 0vh; margin-right: 1vh; cursor: pointer; width: 2vh; text-align: center; background: black; color: white;}
+
+  .bigPost, .moreInfo, .post .num {transition: all 0.3s cubic-bezier(0.33, 1.33, 0.64, 1);}
+    .bigPost:hover, .moreInfo:hover {background: blue;}
+    .post .num:hover {background: transparent;}
+
+      /* ikona co prepina mezi plnym vyjetim .post.info */
+      .moreInfo {width: 4vh; height: 4vh; background: black; color: white; text-align: center; line-height: 4vh; float: right; margin-top: -0.5vh; margin-right: -0.5vh; cursor: pointer;}
+        .moreInfo.up, .bigPost.up {transform: rotate(180deg);}
+
+  /* pokud neni obsah obrazek ale text ==> */
+  .post.info {width: 50vh; height: 6.9vh; overflow-y: hidden; background: white; border: 0.15vh solid black; transition-duration: 0.5s;}
+    .post.info.showInfo {height: 65vh;}
+
+    .post.info .content {height: 56vh; overflow-y: scroll; padding: 0vh 2vh 2vh 2vh; float: left; margin-top: 2vh; width: calc(100% - 4vh); /* cursor: auto !important; user-select: auto; pointer-events: auto; */}
+      .post.info .content::-webkit-scrollbar-thumb {background: black;}
+      .post.info .content li {list-style: none;}
+    .post.info .title {padding: 2vh; width: calc(100% - 4vh);}
+      .post.info .title .name {float: left; overflow-x: auto; width: 40.5vh;}
+
+    /* pokud text utika, rozsiri se div*/
+    .post.info.wider {width: 80vh;}
+    .post.info.wider .name {width: 70.5vh;}
