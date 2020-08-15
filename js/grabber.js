@@ -1,4 +1,11 @@
-// GRABBER
+/*
+* TERMS OF USE grabber.js
+* Open source under the BSD License.
+* Copyright 2020 Oliver Stasa. All rights reserved.
+*
+* plati pro divy co maji class .grabber
+* pak jde ten div chytit a posunutim mysi scrollovat
+*/
 $(function(){
 
   // constants
@@ -17,9 +24,12 @@ $(function(){
 
     if (grab) {
 
+      var from = $(this).offset();
+
       // presun na pozici dle posunuti
-      $(this).scrollLeft(cur.x-e.pageX);
-      $(this).scrollTop(cur.y-e.pageY);
+      $(this).scrollLeft(cur.x-e.pageX+from.left);
+      $(this).scrollTop(cur.y-e.pageY+from.top);
+      //console.log(($(this).outerHeight()-$(this).innerHeight())/2);
 
           // smoothing
           var now = Date.now(),
@@ -83,9 +93,12 @@ $(function(){
     // zastavi animovani, pokud se deje
     $(this).stop();
 
+    // pozice divu ve strance
+    var posCord = $(this).offset();
+
     // pozice
-    cur.x = (e.pageX - $(this).offset().left) + $(this).scrollLeft();
-    cur.y = (e.pageY - $(this).offset().top) + $(this).scrollTop();
+    cur.x = (e.pageX - posCord.left) + $(this).scrollLeft();
+    cur.y = (e.pageY - posCord.top) + $(this).scrollTop();
 
     // potvrzuje grab
     grab = true;

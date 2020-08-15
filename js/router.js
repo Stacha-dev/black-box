@@ -1,13 +1,18 @@
-// IMPORT fce
-////////////////////////////////////////////////////////////////////////////////
+/*
+ou shit router!
+lady gaga would aprove
+*/
 import {loading, title, error} from './router_fce.js';
 import {memex} from './memex.js';
 import {blackbox, openBox} from './blackbox.js';
 import {log} from './loader.js';
 
 
-// PREPINAC STRANEK
-////////////////////////////////////////////////////////////////////////////////
+/*
+basic router
+do page() tece url z adresy
+funkce zavola podle switche soubory a funkce k te url
+*/
 export function page(url) {
 
   loading('on');
@@ -16,7 +21,8 @@ export function page(url) {
   var file,
       pointers,
       memexPg = false,
-      blackboxPg = false;
+      blackboxPg = false,
+      logBr = false;
 
   // udela pole z url podle /
   if (url != null) {
@@ -29,7 +35,8 @@ export function page(url) {
 
     default: case 'memex': // default ==> homepage
       var file = '/php/page/memex.php',
-          memexPg = true;
+          memexPg = true,
+          logBr = true;
     break;
 
 
@@ -37,12 +44,15 @@ export function page(url) {
     case 'prj': // otevreny projekt
       var file = '/php/page/blackbox.php',
           blackboxPg = url;
-          pointers = {"prjId": path[2]};
+          pointers = {"prjId": path[2]},
+          logBr = true;
     break;
 
 
 
-    case 'lang': // zmena jazyku
+    case 'list': // seznam projketu
+      var file = '/php/page/list.php',
+          logBr = true;
     break;
 
 
@@ -63,7 +73,7 @@ export function page(url) {
               }
             });
         } else {
-          var file = '/php/admin/index.php';
+          var file = '/php/admin/admin.php';
         }
     break;
 
@@ -73,37 +83,42 @@ export function page(url) {
 
 
   // START LOADING PAGE
+  var content = $('#content'),
+      delay = 0;
+
+  // udela <br> in log pred logovanim, je to tak hezci
+  if (logBr) {
+    $('#console').append('<br><br>');
+  }
+
   // POKUD JE UVNITR STRANKY #CONTENT, UDELAT FADEOUT
-  var delay = 0;
-  if ($('#content').length) {
+  if (content.length) {
 
     // podle toho kterou stranku animuju, takova animace se zapne
     if (blackboxPg) {
 
       // opozdi ostatni funkce
       delay = 500;
-
+      // provede prechod mezi memexem a blackboxem (shadowMaster)
       openBox(blackboxPg);
 
     }
 
+    // fadeout obsahu
+    content.addClass('fadeoutUp');
 
-    $('#content').addClass('fadeoutUp');
+    var dur = content.css('transition-duration');
 
-    var div = $('#content');
-      var dur = div.css('transition-duration');
-          delay += (dur.substring(0, dur.length-1))*1000;
+        delay += (dur.substring(0, dur.length-1))*100; // *1000 = 1000 × pocet vterin
 
   }
+
 
   // JAKMILE SE DOKONCI FADEOUT, SPUSTIT LOAD OBSAHU
   setTimeout(function(){
 
-        $('#content').remove();
+        content.remove();
         $("body").append($('<div>', {id: 'content', class: 'fadeout'}));
-
-        // make <br> in log :D ==> for design
-        $('#console').append('<br><br>');
 
         $.post(file, pointers, function(res){
 
@@ -113,7 +128,7 @@ export function page(url) {
             var obj = JSON.parse(res);
 
             // preload obrazku
-            if (obj.imgs.length) {
+            if (typeof obj.imgs !== 'undefined' && obj.imgs.length) {
 
               try {
 
@@ -199,6 +214,9 @@ export function page(url) {
 
             // pokud nejsou zadne obrazky k preloadu
             } else {
+
+                log({'headder': obj.headder, 'loaded': true});
+                log({'finish': true});
 
                 // loadne se content
                 $("#content").append(obj.html);

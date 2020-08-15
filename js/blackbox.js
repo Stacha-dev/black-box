@@ -70,7 +70,7 @@ export function loadPosts() {
         post.removeClass('large');
 
          // 2500 ==> cas co trva fadein animace + cas na rozkoukani
-      }, 2500+itt*100+(Math.random()*50));
+      }, 1500+itt*100+(Math.random()*50));
 
       itt++;
 
@@ -90,24 +90,26 @@ export function openBox(link) {
              'w': orig.width(),
              'h': orig.height()};
 
+  log({'fce': 'shadowMaster', 'link': link, 'started': true});
+
   $('body').append($('<div>', {class: 'prj',
                                id: 'shadowMaster',
                                css: {left: obj.pos.left+obj.w/2,
                                      top: obj.pos.top+obj.h/2},
                                html: orig.html()
-                             // presune projekt doprostred s delay
-                             }).delay(500).animate({top: '50vh', left: '50vw'}, 700, 'easeOutExpo', function(){
+                              // presune projekt doprostred s delay
+                              }).delay(250).animate({top: '50vh', left: '50vw'}, 500, function(){
 
-                               var div = $(this);
+                                   var div = $(this);
 
-                               // od-animuje title a sidecick, i odstrani
-                               div.find('.title, .sidekick').addClass('away').delay(500).queue(function(){
-                                    $(this).remove().dequeue();
-                               });
-                               // zvetsi hlavni obrazek
-                               setTimeout(function(){
-                                 div.find('.mainPic').addClass('large blur');
-                               }, 250);
+                                   // od-animuje title a sidecick, i odstrani
+                                   div.find('.title, .sidekick').addClass('away').delay(250).queue(function(){
+                                        $(this).remove().dequeue();
+                                   });
+                                   // zvetsi hlavni obrazek
+                                   setTimeout(function(){
+                                     div.find('.mainPic').addClass('large blur');
+                                   }, 250);
 
                              })
                   );

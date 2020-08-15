@@ -7,7 +7,9 @@ var logCount = 0;
 // log strelec
 export function log(data) {
 
-  // nice json sakra prace
+  /*
+  //  nice json sakra prace
+  */
   function niceJson(json){
 
     if (typeof json != 'string') {
@@ -49,9 +51,12 @@ export function log(data) {
     $('body').append($('<div>', {id: 'console', class: 'log'}));
   }
 
+  /*
+  // MAIN FCE
+  */
   // variables
   var con = $('#console'),
-      delay = logCount*30+(Math.random()*20),
+      delay = logCount*20+(Math.random()*10), // delay = logCount*30+(Math.random()*20),
       totalDelay =+ delay;
 
       // pokud se vola log znova, tak zobrazit
@@ -62,14 +67,27 @@ export function log(data) {
       // on finish of loading
       if (data.finish == true) {
 
+        if ($('#console li').length <= 8) {
+
+          con.append('<br><br><br><br><br><br><br><br>');
+
+        }
+
         // exit console
         setTimeout(function(){
 
           // erase log counter
           logCount = 0;
 
-          // napise zakonceni konzole
-          con.append('<br><br><div class="menuTop">ČERNÁ SKŘÍŇKA / BLACK BOX<div class="tools"><span class="toggleLog">›_</span> ☷ <a href="/memex">☒</a> EN</div></div>');
+          // jaky je jazyk
+          var langHtml = $('html').attr('lang');
+          switch (langHtml) {
+            default: case 'en': var lang = 'CZ'; break;
+            case 'cs': var lang = 'EN'; break;
+          }
+
+          // napise zakonceni konzole ›_
+          con.append('<br><br><div class="menuTop">ČERNÁ SKŘÍŇKA / BLACK BOX<div class="tools"><div class="langIcon">'+lang+'</div><div class="consoleIcon toggleLog"></div><a href="/list"><div class="listIcon"></div></a><a href="/memex"><div class="memexIcon"></div></a></div></div>');
           con.scrollTop(con.prop('scrollHeight') - con.innerHeight());
 
           // disable scrolling
@@ -81,6 +99,12 @@ export function log(data) {
             // load content + hide log
             $('#console').removeClass('log');
             $('#content').removeClass('fadeout');
+
+              // zobrazi menu pokud neni zobrazeno
+              var menu = $('#menu');
+              if (menu.hasClass('hidden')) {
+                menu.removeClass('hidden');
+              }
 
             // turn loading off
             loading('off');
@@ -98,7 +122,7 @@ export function log(data) {
           // pokud probihala animace z prechozi stranky
           var mainPic = $('.mainPic');
           if (mainPic.length) {
-            totalDelay += 1000;
+            totalDelay += 1000; // += 1000
 
             setTimeout(function(){
               // odstrani obrazek po skonceni logu, i jeho parent

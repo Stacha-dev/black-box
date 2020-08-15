@@ -1,4 +1,11 @@
-// GRABBER
+/*
+* TERMS OF USE mover.js
+* Open source under the BSD License.
+* Copyright 2020 Oliver Stasa. All rights reserved.
+*
+* plati pro divy co maji class .moveable
+* daji se chytit a da se s nema hybat, necekane...
+*/
 $(function(){
 
   // constants

@@ -1,8 +1,12 @@
 <?php
+session_start();
+if (isset($_SESSION['kurator'])) {
+  
+}
 
   $keywords = array("pavel", "lukas", "radek", "petr", "lucka", "dana", "marie", "karla", "honza", "ellen", "elsa", "emanuel", "elektra");
   $name = array("RUDOLF ROSOMÁK", "ZORA PODLENOVÁ", "MAGDALENA ZAKNIAJKTELKO", "SEVERÍN DUŠEK", "MARTIN KONVIČKA", "KARLA MATĚJOVÁ", "PETR LAHODA", "KAIKA NOIKA");
-  $imgs = array("/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg");
+  $imgs = array("/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg");
 
   $images = '';
   for ($i = 0; $i < sizeof($imgs); $i++) {

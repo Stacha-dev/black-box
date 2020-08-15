@@ -1,10 +1,12 @@
 <?php
+session_start();
 
 $og = OgImage::getUrl();
+$lang = 'cs';
 
 echo '
 <!doctype html>
-<html>
+<html lang="'.$_SESSION['lang'].'">
   <head>
     <meta charset="utf-8">
 

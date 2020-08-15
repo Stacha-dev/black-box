@@ -1,3 +1,8 @@
+/*
+memex, resi zobrazeni projektu na hl. strance
+input json
+lady gaga would adore
+*/
 import {log} from './loader.js';
 
 // MEMEX
@@ -156,6 +161,9 @@ export function memex() {
 }
 
 
+/*
+resi prepocteni linku
+*/
 // LINKS
 // vytvoreni linku (car) mezi projektama
 export function links(call) {
@@ -171,6 +179,7 @@ export function links(call) {
     // if resize, make <br> in log :D ==> for design
     if (call == 'resize') {
         $('#console').append('<br><br>');
+        log({"connections": "relocation started"});
     }
 
     // funkce na testovani duplicity konexi
@@ -195,7 +204,7 @@ export function links(call) {
       $.each(netKey, function(i, tag){
 
         if (tag[0] == id) {
-          keywords.push(tag[1]);
+          keywords.push('#'+tag[1]);
         }
 
       });
@@ -291,9 +300,11 @@ export function links(call) {
           attr = {"t": ((chor.y1+chor.y2)/2),
                   "l": ((chor.x1+chor.x2)/2-len/2),
                   "len": len,
-                  "ang": Math.atan2((chor.y1-chor.y2),(chor.x1-chor.x2))*(180/Math.PI),
+                  "ang": Math.atan2((chor.y1-chor.y2),(chor.x1-chor.x2))*(180/Math.PI)
+                  /*
                   "delay": (-1)*Math.random()*5,
-                  "dur": 2+Math.random()*3},
+                  "dur": 2+Math.random()*3
+                  */},
           spojnice = net[itt][0]+net[itt][1],
           keys = matchKeywords(spojnice);
 
@@ -311,15 +322,22 @@ export function links(call) {
       .append($('<div>',{class: 'line',
                          //id: +net[itt][0]+net[itt][1],
                          css:   {top: attr.t+'px',
-                                 left: attr.l+'px',
-                                 width: attr.len+'px',
-                                 transform: "rotate("+attr.ang+"deg)",
+                                 left: attr.l+'px', // attr.l/win.w*100+'vw'
+                                 width: attr.len+'px', // 'calc(100vw / 100vh * 1vh * '+attr.len+' / 100vh)' ? nefunguje
+                                 transform: "rotate("+attr.ang+"deg)"
+                                 /*
                                  "animation-delay": +'s',
                                  "animation-duration": attr.dur+'s'
-                               },
-                          html: '<div class="keys">'+keys+'</div>'
+                                 */
+                               }
                         })
-      .delay(itt*100).animate({opacity: 1}, 1000, function(){}));
+      .html('<div class="keys">'+keys+'</div>')
+      .attr('baseX', obj1.obj.x).attr('baseX2', obj2.obj.x)
+      .delay(itt*100).animate({opacity: 1}, 1000, function(){
+
+          // neco jeste?
+
+      }));
 
       // zakonci log po posledni lince
       if (itt == net.length-1) {
@@ -328,6 +346,7 @@ export function links(call) {
 
         // pokud dochazi k repaintu linek kvuli resize okna
         if (call == 'resize') {
+          log({"connections": "relocation finised"});
           log({"finish": true});
         }
 
