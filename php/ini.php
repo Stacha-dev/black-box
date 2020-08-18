@@ -22,6 +22,7 @@ if (!isset($_SESSION['user'])) {$_SESSION['user'] = 'visitor';}
 
 
 
+
 /*
 vygeneruje og image podle url
 */

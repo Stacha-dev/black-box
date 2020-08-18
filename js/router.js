@@ -73,7 +73,27 @@ export function page(url) {
               }
             });
         } else {
-          var file = '/php/admin/admin.php';
+
+          // importuje admin funkce
+          if (typeof path[2] != 'undefined' && path[2] != 'home') {
+            //import './admin.js'; // proc to nefunguje??
+            $('head').append('<script type="module" src="/js/admin.js"></script>');
+          }
+          // stranky adminu
+          switch (path[2]) {
+            default: case 'home':
+              var file = '/php/admin/admin.php';
+            break;
+            case 'projects':
+              var file = '/php/admin/projects.php',
+                  pointers = {'action': path[3], 'id': path[4]};
+            break;
+            case 'data':
+              var file = '/php/admin/data.php',
+                  pointers = {'action': path[3], 'id': path[4]};
+            break;
+          }
+
         }
     break;
 
@@ -190,6 +210,7 @@ export function page(url) {
                             break;
 
                             default:
+                              error('no afterload selector');
                             break;
                           }
 
@@ -215,8 +236,7 @@ export function page(url) {
             // pokud nejsou zadne obrazky k preloadu
             } else {
 
-                log({'headder': obj.headder, 'loaded': true});
-                log({'finish': true});
+                log({'headder': obj.headder, 'finish': true});
 
                 // loadne se content
                 $("#content").append(obj.html);

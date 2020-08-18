@@ -60,16 +60,16 @@ export function log(data) {
       totalDelay =+ delay;
 
       // pokud se vola log znova, tak zobrazit
-      if (!con.hasClass('log')) {
+      if (!con.hasClass('log') && logCount > 1) {
         con.addClass('log');
       }
 
       // on finish of loading
       if (data.finish == true) {
 
-        if ($('#console li').length <= 8) {
+        if ($('#console li').length == 0) {
 
-          con.append('<br><br><br><br><br><br><br><br>');
+          con.append('<br><br><br><br><br><br><br><br><br><br>');
 
         }
 

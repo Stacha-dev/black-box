@@ -30,7 +30,10 @@ form buttons
 inputs, textareas, ...
 */
 input, textarea {font-family: 'FKG', monospace; border: 0; outline: 0; padding: 1vh; font-size: 2.5vh; border-bottom: 0.5vh solid transparent;}
-input:focus {border-bottom: 0.5vh solid blue;}
+  input[type="submit"] {background: #dadada;}
+  input[type="submit"]:hover {cursor: pointer; border-bottom: 0.5vh solid green;}
+  input[type="checkbox"] {width: 2.5vh; height: 2.5vh; position: absolute; margin-left: 1vh;}
+input:focus, textarea:focus {border-bottom: 0.5vh solid blue !important;}
 
 /*
 EaseOutQuart
@@ -136,10 +139,10 @@ uuuuuh (pain)
     #kuratori {left: 0;}
     #texty {right: 0;}
 
-  #menu .kurator {height: 50vh; width: 4vh; line-height: 4vh; text-align: center; font-size: 2vh; border-left: 0.15vh solid black;}
+  #menu .kurator {height: 50vh; width: 4vh; line-height: 4.3vh /* .3 proto, ze je 2×0.15vh border u child spanu */; text-align: center; font-size: 2vh; border-left: 0.15vh solid black;}
     .kurator:nth-child(1) {border-bottom: 0.15vh solid black;}
 
-  #menu .title {height: calc(100vh / 3); width: 5vh; line-height: 5vh; text-align: center; transform: translateX(-5.15vh); border: 0.15vh solid black; border-right: none; background: white;}
+  #menu .title {height: calc(100vh / 3); width: 5vh; line-height: 5.3vh /* .3 proto, ze je 2×0.15vh border u child spanu */; text-align: center; transform: translateX(-5.15vh); border: 0.15vh solid black; border-right: none; background: white;}
       #t1 .title {margin-top: -0.15vh;}
       #t3 .title {margin-bottom: -0.15vh;}
     #menu .title:hover, #menu .kurator:hover {cursor: pointer;}
@@ -275,4 +278,29 @@ zobrazeni v tabulce
 /*
 ADMIN
 */
-.logout:hover {cursor: pointer; color: red;}
+.admin a:hover {text-decoration: underline;}
+.logout, .deleteThis {color: red;}
+         .logout:hover, .deleteThis:hover {text-decoration: underline; cursor: pointer;}
+/* tabulka vypisu veci */
+.adminTable {border-collapse: collapse;}
+.adminTable tr td {padding: 1vh; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); border-bottom: 0.5vh solid transparent;}
+  .adminTable tr:first-child td  {background: black; color: white;}
+  .adminTable tr:not(:first-child):hover td {border-bottom: 0.5vh solid black;}
+
+  .admin input, .admin textarea {border-bottom: 0.5vh solid #dadada;}
+  .admin input[type="submit"].reminder {background: lightgreen !important;}
+
+  .adminTable img, #fronta img {height: 10vh;}
+    #fronta table tr td:nth-child(1) {width: 20vh; text-align: center;}
+    #fronta table tr td:nth-child(2) {padding-left: 2vh; vertical-align: top;}
+  .wait span {animation: wait 1s infinite;}
+    .wait span:nth-child(2) {animation-delay: 0.33s;}
+    .wait span:nth-child(3) {animation-delay: 0.66s;}
+  @keyframes wait {
+    80% {opacity: 0;}
+    81% {opacity: 1;}
+  }
+
+  .adminTable a {margin: auto 0.5vh;}
+  .adminTable a.selected {background: lightgreen;}
+  .adminTable a.not {background: pink;}
