@@ -15,9 +15,19 @@ import {error} from './router_fce.js';
 function makeRight(val) {
 
   // return
-  return val.replace(/"|'|<|>/gi, '');
+  //return val.replace(/"|'/gi, '&apos;');
+  return val.replace(/"/gi, '&quot;').replace(/'/gi, '&apos;');
 
 }
+
+
+
+// mazaci prompt
+$(document).on('click touch', '.togglePrompt', function(){
+
+  $('#prompt').slideToggle();
+
+});
 
 
 
@@ -52,13 +62,29 @@ $(document).on('submit', '.uploadForm', function(e) {
           },
           success: function (data) {
 
-            var obj = JSON.parse(data);
+            // zkusi jestli se vrati json
+            try {
 
-            if (obj.status == 'success') {
-              $('#f'+i).html('<table><tr><td><img src="/data/projects/'+obj.data+'.jpg"></td><td><form method="post" act="edit" class="adminForm" table="data" idKey="'+obj.dataId+'"><input name="popis" placeholder="POPIS"><input type="submit" value="ULOŽIT"></form></td></tr></table>');
-            } else {
-              console.log(obj);
-              $('#f'+i).html('<s>'+v['name']+'</s> [ERROR]');
+                var obj = JSON.parse(data);
+
+                if (obj.status == 'success') {
+                  $('#f'+i).html('<table><tr><td><img src="/data/projects/'+obj.data+'.jpg"></td><td><form method="post" act="edit" class="adminForm" table="data" idKey="'+obj.dataId+'"><input name="popis" placeholder="POPIS"><input type="submit" value="ULOŽIT"></form></td></tr></table>');
+                } else {
+                  console.log(obj);
+                  $('#f'+i).html('<s>'+v['name']+'</s> [ERROR]');
+                }
+
+            // jinak error
+            } catch (e) {
+
+                console.log(data, e);
+
+                if (e instanceof SyntaxError) {
+                    error('data not json');
+                } else {
+                    error('general error');
+                }
+
             }
 
           },
@@ -129,10 +155,11 @@ $(document).on('submit', '.adminForm', function(e){
           var id = form.attr('idkey'),
               active = $('input[name="active"]:checked').length?1:0,
               name = makeRight($('input[name="autor"]').val()),
+              keywords = makeRight($('textarea[name="keywords"]').val()),
               info = makeRight($('textarea[name="info"]').val());
 
             if  (id.length && name.length && info.length) {
-              var params = {'id': id, 'name': name, 'info': info, 'active': active, 'action': action, 'sql': true},
+              var params = {'id': id, 'name': name, 'info': info, 'keywords': keywords, 'active': active, 'action': action, 'sql': true},
                   greenLight = true;
             } else {
                 if (!id.length) {wrongs.push('není zadáno id');}

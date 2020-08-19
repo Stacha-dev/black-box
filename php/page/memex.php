@@ -1,44 +1,56 @@
 <?php
 session_start();
 if (isset($_SESSION['kurator'])) {
-  
+
 }
 
-  $keywords = array("pavel", "lukas", "radek", "petr", "lucka", "dana", "marie", "karla", "honza", "ellen", "elsa", "emanuel", "elektra");
-  $name = array("RUDOLF ROSOMÁK", "ZORA PODLENOVÁ", "MAGDALENA ZAKNIAJKTELKO", "SEVERÍN DUŠEK", "MARTIN KONVIČKA", "KARLA MATĚJOVÁ", "PETR LAHODA", "KAIKA NOIKA");
-  $imgs = array("/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg");
 
-  $images = '';
-  for ($i = 0; $i < sizeof($imgs); $i++) {
-    $images .= '"'.$imgs[$i].'"';
-    if ($i != sizeof($imgs)-1) {
-      $images .= ',';
+
+/*
+DB SETUP
+*/
+include '../sql.php';
+$conn = sql();
+
+
+
+// zakladni promenne
+$imgpreload = array();
+$imgset = '';
+$html = '';
+
+
+
+// vypise vsecky projekty
+$sql = 'SELECT id, name, keywords, link, (SELECT filename FROM projectdata WHERE pid = projects.id AND main = 1) AS mainpic FROM projects WHERE active = "1"';
+if ($ress = $conn->query($sql)) {
+    while($prj = $ress->fetch_object()){
+
+      // hlavni fotka
+      $imgset = '<img src=\\"/data/projects/'.$prj->mainpic.'.jpg\\" class=\\"mainPic\\">';
+      array_push($imgpreload, '"/data/projects/'.$prj->mainpic.'.jpg"');
+
+      // obrazky
+      $imgs = 'SELECT filename FROM projectdata WHERE pid = "'.$prj->id.'" AND display = "1" AND filename <> "'.$prj->mainpic.'" ORDER BY RAND() LIMIT 2';
+      $img = $conn->query($imgs);
+        while($thumb = $img->fetch_object()){
+          $imgset .= '<img src=\\"/data/projects/'.$thumb->filename.'.jpg\\" class=\\"sidekick\\">';
+          array_push($imgpreload, '"/data/projects/'.$thumb->filename.'.jpg"');
+        }
+
+      // nacpe do html
+      $html .= '<div class=\\"prj\\" tags=\\"'.preg_replace('/\s*,\s*/', ',', $prj->keywords).'\\" id=\\"prj'.$prj->link.'\\">'.$imgset.'<div class=\\"title\\"><a href=\\"/prj/'.$prj->link.'\\">'.$prj->name.'</a></div></div>';
+
     }
-  }
+}
 
-  $html = '';
-  for ($i = 0; $i < 8; $i++) {
 
-    $randk = '';
-    for ($k = 0; $k < rand(0, 5); $k++) {
-      $randk .= $keywords[rand(0, sizeof($keywords)-1)].',';
-    }
-    $randk = substr($randk, 0, -1);
 
-    $img = '<img src=\\"/data/raziel.jpg\\" class=\\"mainPic\\">';
-    $imgSK = array('<img class=\\"sidekick\\" src=\\"/data/mbr.png\\">', '<img class=\\"sidekick\\" src=\\"/data/up.png\\">', '<img class=\\"sidekick\\" src=\\"/data/alina.png\\">');
-
-    $img = $img.$imgSK[rand(0, sizeof($imgSK)-1)].$imgSK[rand(0, sizeof($imgSK)-1)];
-    $nm = $name[rand(0, sizeof($name)-1)];
-
-    $html .= '<div class=\\"prj\\" tags=\\"'.$randk.'\\" id=\\"prj'.$i.'\\">'.$img.'<div class=\\"title\\"><a href=\\"/prj/linktoprj'.$i.'\\" title=\\"==> '.$i.':: '.$randk.'\\">'.$nm.'</a></div></div>';
-
-  }
-
-  echo '
-  {
-    "headder": "memex",
-    "html": "'.$html.'",
-    "imgs": ['.$images.']
-  }
-  ';
+// OUTPUT json
+echo '
+{
+  "headder": "memex",
+  "html": "'.$html.'",
+  "imgs": ['.join(',', $imgpreload).']
+}
+';

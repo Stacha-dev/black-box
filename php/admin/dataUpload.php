@@ -3,14 +3,6 @@ session_start();
 if ($_SESSION['user'] == 'admin') {
 
 
-/*
-php.ini SET
-*/
-ini_set('upload_max_filesize', '99MB');
-ini_set('max_file_uploads', '25');
-ini_set('post_max_size', '99MB');
-ini_set('max_execution_time', '120');
-
 
 /*
 DB SETUP
@@ -21,7 +13,9 @@ $conn = sql();
 
 $id = isset($_GET['id'])?$_GET['id']:false;
 $data = false;
+$dataId = false;
 $status = 'default';
+
 
 
 /*
@@ -36,6 +30,7 @@ function randNazev() {
     }
     return $rand;
 }
+
 
 
 /*
@@ -72,6 +67,7 @@ function resizeImg($file, $dest, $w, $h) {
     }
 
 }
+
 
 
 /*
@@ -131,6 +127,11 @@ if ($id && isset($_FILES['files']) && !empty($_FILES['files'])) {
 
 }
 
+
+
+/*
+OUTPUT
+*/
 echo '
 {
   "headder": "upload",

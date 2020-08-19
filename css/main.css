@@ -280,7 +280,7 @@ ADMIN
 */
 .admin a:hover {text-decoration: underline;}
 .logout, .deleteThis {color: red;}
-         .logout:hover, .deleteThis:hover {text-decoration: underline; cursor: pointer;}
+         .logout:hover, .deleteThis:hover, .togglePrompt:hover {text-decoration: underline; cursor: pointer;}
 /* tabulka vypisu veci */
 .adminTable {border-collapse: collapse;}
 .adminTable tr td {padding: 1vh; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); border-bottom: 0.5vh solid transparent;}
@@ -304,3 +304,4 @@ ADMIN
   .adminTable a {margin: auto 0.5vh;}
   .adminTable a.selected {background: lightgreen;}
   .adminTable a.not {background: pink;}
+  #prompt {display: none;}

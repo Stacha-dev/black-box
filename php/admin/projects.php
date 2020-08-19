@@ -1,6 +1,6 @@
 <?php
 session_start();
-if ($_SESSION['user'] == 'admin') { ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+if ($_SESSION['user'] == 'admin') {
 
 /*
 DB SETUP
@@ -127,7 +127,7 @@ if ($conn) {
             }
 
             // upravit projekt v DB
-            $sql = 'UPDATE projects SET name = "'.$_POST['name'].'",'.$newLink.' info = "'.$_POST['info'].'", active = "'.$_POST['active'].'" WHERE id = "'.$_POST['id'].'"';
+            $sql = 'UPDATE projects SET name = "'.$_POST['name'].'",'.$newLink.' info = "'.$_POST['info'].'", keywords = "'.$_POST['keywords'].'", active = "'.$_POST['active'].'" WHERE id = "'.$_POST['id'].'"';
             if ($conn->query($sql)) {
               $status = 'success';
               $id = $_POST['id'];
@@ -139,7 +139,7 @@ if ($conn) {
           } else if (isset($_POST['id'])) {
 
             // vytvorit form pro edit
-            $sql = 'SELECT id, name, link, info, active FROM projects WHERE id = "'.$_POST['id'].'"';
+            $sql = 'SELECT id, name, link, info, keywords, active FROM projects WHERE id = "'.$_POST['id'].'"';
             if ($ress = $conn->query($sql)) {
                 $obj = $ress->fetch_object();
 
@@ -151,17 +151,20 @@ if ($conn) {
                     $html .= '<li><a href=\\"/prj/'.$obj->link.'\\">[otevřít projekt] prj/'.$obj->link.'</a></li>';
                     $html .= '<li><a href=\\"/admin/data/show/'.$obj->id.'\\">zobrazit data projektu</a></li>';
                     $html .= '<li><a href=\\"/admin/data/add/'.$obj->id.'\\">přidat data projektu</a></li><br>';
-                    $html .= '<h3>JMÉNO AUTORA</h2>';
+                    $html .= '<h3>JMÉNO AUTORA</h3>';
                     $html .= '<li><input type=\\"text\\" name=\\"autor\\" value=\\"'.$obj->name.'\\" placeholder=\\"JMÉNO AUTORA\\"></li>';
-                    $html .= '<h3>INFORMACE</h2>';
+                    $html .= '<h3>INFORMACE</h3>';
                     $html .= '<li><textarea name=\\"info\\" placeholder=\\"INFORMACE\\">'.$obj->info.'</textarea></li>';
-                    $html .= '<h3>NASTAVENÍ</h2>';
+                    $html .= '<h3>KLÍČOVÉ SLOVA</h3>';
+                    $html .= '<li><textarea name=\\"keywords\\" placeholder=\\"KLÍČOVÉ SLOVA\\">'.$obj->keywords.'</textarea><br><i>*oddělit čárkou</i></li>';
+                    $html .= '<h3>NASTAVENÍ</h3>';
                     $html .= '<li>PUBLIKOVAT <input type=\\"checkbox\\" name=\\"active\\"'.$active.'></li>';
                     $html .= '<br><br>';
                     $html .= '<li><input type=\\"submit\\" name=\\"submit\\" value=\\"ULOŽIT\\"></li>';
                     $html .= '<br><br>';
-                    $html .= '<h2>Danger zone</h2><br>';
-                    $html .= '<li><a href=\\"/admin/projects/delete/'.$obj->id.'\\" class=\\"deleteThis\\">smazat projekt</a></li>';
+                    $html .= '<h3>Danger zone</h3><br>';
+                    $html .= '<li id=\\"prompt\\">Opravdu smazat projekt *'.$obj->name.'* včetně všech dat patřících tomuto projektu?<br><br><a href=\\"/admin/projects/delete/'.$obj->id.'\\" class=\\"deleteThis\\">ano, odstranit celý projekt</a> / <span class=\\"togglePrompt\\">zachovat projekt</span></li><br>';
+                    $html .= '<li><span class=\\"deleteThis togglePrompt\\">smazat projekt</span></li>';
                     $html .= '</ul>';
                     $html .= '</form>';
 
@@ -180,11 +183,32 @@ if ($conn) {
 
           if (isset($_POST['id'])) {
 
-            $sql = 'DELETE FROM projects WHERE id = '.$_POST['id'];
-            if ($conn->query($sql)) {
-              $html .= '<br><h2>SMAZÁNO</h2><br><ul><li><a href=\\"/admin/projects\\">výpis projektů</a></li></ul>';
+            // smazat vsechny fotky ze serveru
+            $sql = 'SELECT filename FROM projectdata WHERE pid = "'.$_POST['id'].'"';
+            if ($ress = $conn->query($sql)) {
+              while($obj = $ress->fetch_object()){
+
+                $filename = $obj->filename.'.jpg';
+                chmod('../../data/projects/'.$filename, 0777);
+                if (!unlink('../../data/projects/'.$filename)) {
+                  $html .= '<br><h2>CHYBA, "'.$filename.'" NESMAZÁNO</h2>';
+                }
+
+              }
+
+              // smazat vse z SQL
+              $sql = 'DELETE FROM projects WHERE id = '.$_POST['id'].';';
+              $sql .= 'DELETE FROM projectdata WHERE pid = '.$_POST['id'].';';
+              if ($conn->multi_query($sql)) {
+                $html .= '<br><h2>SMAZÁNO</h2><br><ul><li><a href=\\"/admin/projects\\">výpis projektů</a></li></ul>';
+              } else {
+                $html .= '<br><h2>CHYBA, NESMAZÁNO z DB</h2>';
+              }
+
             } else {
-              $html .= '<br><h2>CHYBA, NESMAZÁNO</h2>';
+
+                $html .= '<br><h2>NEJEDE DB</h2>';
+
             }
 
           } else {

@@ -1,5 +1,17 @@
 <?php
 
+
+
+/*
+DB SETUP
+*/
+include '../sql.php';
+$conn = sql();
+
+// omg to se poseru
+
+
+
 $name = array("RUDOLF ROSOMÁK", "ZORA PODLENOVÁ", "MAGDALENA ZAKNIAJKTELKO", "SEVERÍN DUŠEK", "MARTIN KONVIČKA", "KARLA MATĚJOVÁ", "PETR LAHODA", "KAIKA NOIKA");
 $imgs = array("/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg", "/data/alina.png", "/data/mbr.png", "/data/up.png", "/data/raziel.jpg");
 $keywords = array("obrázek", "fotografie", "screenshot", "nahrávka", "malba", "osobní materiál", "dokumentace");
