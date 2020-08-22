@@ -25,7 +25,7 @@ function makeRight(val) {
 // mazaci prompt
 $(document).on('click touch', '.togglePrompt', function(){
 
-  $('#prompt').slideToggle();
+  $('#prompt, .deleteThis.togglePrompt').slideToggle();
 
 });
 
@@ -68,7 +68,7 @@ $(document).on('submit', '.uploadForm', function(e) {
                 var obj = JSON.parse(data);
 
                 if (obj.status == 'success') {
-                  $('#f'+i).html('<table><tr><td><img src="/data/projects/'+obj.data+'.jpg"></td><td><form method="post" act="edit" class="adminForm" table="data" idKey="'+obj.dataId+'"><input name="popis" placeholder="POPIS"><input type="submit" value="ULOŽIT"></form></td></tr></table>');
+                  $('#f'+i).html('<table><tr><td><img src="/data/projects/'+obj.data+'.jpg"></td><td><form method="post" act="edit" class="adminForm" table="data" idKey="'+obj.dataId+'"><input name="popis" placeholder="POPIS" autocomplete="off"><input name="popis_en" placeholder="DESCRIPTION" autocomplete="off"><input type="submit" value="ULOŽIT"></form></td></tr></table>');
                 } else {
                   console.log(obj);
                   $('#f'+i).html('<s>'+v['name']+'</s> [ERROR]');
@@ -101,6 +101,87 @@ $(document).on('submit', '.uploadForm', function(e) {
 
   e.preventDefault();
   return false;
+
+});
+
+
+
+// ai kurator
+$(document).on('submit', '.clusterForm', function(e) {
+
+  var pojistka = $('input[name="pojistka"]').val();
+
+  // pokud je nejaky soubor k nahrani
+  if (pojistka.toUpperCase() == "POTVRZUJI") {
+
+    $('form').hide();
+
+      // lady gaga make it work
+      $.ajax({
+          url: '/php/admin/clustersExe.php',
+          beforeSend: function(e) {
+            $('#clusterLoading').html('<span class="wait big"><span>.</span><span>.</span><span>.</span></span><br><br>');
+          },
+          success: function (data) {
+
+            // zkusi jestli se vrati json
+            try {
+
+                var obj = JSON.parse(data);
+
+                // pokud je to uspesny to generovani, tak posle vysledek do databaze
+                if (obj.status == "success") {
+
+                  // post co to posle do databaze ten json
+                  $.post('/php/admin/clustersUpload.php', {'data': obj.result}, function(res){
+
+                     var result = JSON.parse(res);
+                     if (result.status == 'success') {
+
+
+                     } else {
+
+                       console.log(result);
+                       error('error saving results');
+
+                     }
+
+                  });
+
+                } else {
+
+                  console.log(obj);
+                  $('#clusterLoading').html('ERROR');
+
+                }
+
+            // jinak error
+            } catch (e) {
+
+                console.log(data, e);
+
+                if (e instanceof SyntaxError) {
+                    error('data not json');
+                } else {
+                    error('general error');
+                }
+
+            }
+
+          },
+          error: function (e) {
+            console.log(e);
+            $('#clusterLoading').html('ERROR');
+          }
+      });
+
+  } else {
+
+    error('není napsáno "POTVRZUJI"');
+
+  }
+
+  e.preventDefault();
 
 });
 
@@ -156,10 +237,12 @@ $(document).on('submit', '.adminForm', function(e){
               active = $('input[name="active"]:checked').length?1:0,
               name = makeRight($('input[name="autor"]').val()),
               keywords = makeRight($('textarea[name="keywords"]').val()),
-              info = makeRight($('textarea[name="info"]').val());
+              keywords_en = makeRight($('textarea[name="keywords_en"]').val()),
+              info = makeRight($('textarea[name="info"]').val()),
+              info_en = makeRight($('textarea[name="info_en"]').val());
 
-            if  (id.length && name.length && info.length) {
-              var params = {'id': id, 'name': name, 'info': info, 'keywords': keywords, 'active': active, 'action': action, 'sql': true},
+            if  (id.length && name.length && (info.length || info_en.length)) {
+              var params = {'id': id, 'name': name, 'info': info, 'info_en': info_en, 'keywords': keywords, 'keywords_en': keywords_en, 'active': active, 'action': action, 'sql': true},
                   greenLight = true;
             } else {
                 if (!id.length) {wrongs.push('není zadáno id');}
@@ -201,14 +284,16 @@ $(document).on('submit', '.adminForm', function(e){
         case 'edit':
 
           var id = form.attr('idkey'),
-              popis = form.find('input[name="popis"]').val();
+              popis = form.find('input[name="popis"]').val(),
+              popis_en = form.find('input[name="popis_en"]').val();
 
-            if  (id.length && popis.length) {
-              var params = {'id': id, 'popis': popis, 'active': active, 'action': action, 'sql': true},
+            if  (id.length && (popis.length || popis_en.length)) {
+              var params = {'id': id, 'popis': popis, 'popis_en': popis_en, 'active': active, 'action': action, 'sql': true},
                   greenLight = true;
             } else {
                 if (!id.length) {wrongs.push('není zadáno id');}
-                if (!popis.length) {wrongs.push('není vyplněno jméno');}
+                if (!popis.length) {wrongs.push('není vyplněn popis [cs]');}
+                if (!popis_en.length) {wrongs.push('není vyplněn popis [en]');}
             }
 
         break;

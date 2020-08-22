@@ -26,9 +26,15 @@ export function loading(e) {
       if (!$('#loading').length) {
         $('body').append('<div class="loading t"></div><div class="loading r"></div><div class="loading b"></div><div class="loading l"></div>');
           $('.loading').fadeIn(100, function(){
-            // set interval => pojistka ?
+            // set interval => pojistka? (dole)
           });
       }
+
+      // timeout nahravani, at netrva dlouho, kdyztak error
+      window.timeout = setTimeout(function(){
+        loading('off');
+        error('request timeout, please reload page');
+      }, 60000);
 
     break;
 
@@ -44,6 +50,8 @@ export function loading(e) {
       function() {
         $('.loading').remove();
       });
+
+      clearTimeout(window.timeout);
 
     break;
 

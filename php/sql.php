@@ -1,13 +1,15 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
+/*
+PRIPOJENI K SQL
+LOCALHOST STACHA
+*/
+
+
+
 /*
 MySQL
 */
 function sql() {
-
-  if ($_SESSION['user'] == 'admin') {
 
     $server = "localhost";
     $login = "c4blackbox";
@@ -21,7 +23,5 @@ function sql() {
     } else {
       return $conn;
     }
-
-  }
 
 }

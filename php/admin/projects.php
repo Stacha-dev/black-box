@@ -13,50 +13,7 @@ $conn = sql();
 /*
 fuknce pro testovani linku
 */
-// testne v sql ten link a vrati true/false
-function sqlLink($link, $conn) {
-
-  $sql = 'SELECT COUNT(*) AS pocet FROM projects WHERE link = "'.$link.'"';
-  $ress = $conn->query($sql);
-  $obj = $ress->fetch_object();
-  if (!$obj->pocet) {
-    return true;
-  } else {
-    return false;
-  }
-
-}
-// prevede text na link
-function testForLink($name, $conn) {
-
-  // zakladni prepis
-  $najdi = array('ě', 'š', 'č', 'ř', 'ž', 'ý', 'á', 'í', 'é', 'ď', 'ť', 'ň', "'", '"', ' ');
-  $vymen = array('e', 's', 'c', 'r', 'z', 'y', 'a', 'i', 'e', 'd', 't', 'n', '',  '',  '-');
-
-  $link = strtolower($name);
-  $link = str_replace($najdi, $vymen, $link);
-  $link = iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $link);
-  $link = preg_replace('/[^A-Za-z0-9\-]/', '', $link);
-  $link = preg_replace('/-+/', '-', $link);
-  $link .= '-'.date('Y');
-
-  $pass = 0;
-  $testLink = $link;
-
-  // cyklus testu
-  while (!sqlLink($testLink, $conn)) {
-
-    if ($pass > 0) {
-      $testLink = $link.'_'.$pass;
-    }
-
-    $pass++;
-
-  }
-
-  return $testLink;
-
-}
+include '../fce.php';
 
 
 
@@ -85,10 +42,11 @@ if ($conn) {
         if (isset($_POST['sql']) && $_POST['sql'] == true) {
 
           // vytvori link = odstrani specialni znaky
-          $link = testForLink($_POST['name'], $conn);
+          $name = repairStr($_POST['name']);
+          $link = testForLink($name, $conn);
 
           // vlozi do db
-          $sql = 'INSERT INTO projects(name, link) VALUES ("'.$_POST['name'].'", "'.$link.'")';
+          $sql = 'INSERT INTO projects(name, link) VALUES ("'.$name.'", "'.$link.'")';
           if ($conn->query($sql)) {
             $status = 'success';
             $id = $conn->insert_id;
@@ -119,15 +77,18 @@ if ($conn) {
             $sql = 'SELECT name FROM projects WHERE id = "'.$_POST['id'].'"';
             $ress = $conn->query($sql);
             $obj = $ress->fetch_object();
-            if ($obj->name != $_POST['name']) {
-              $link = testForLink($_POST['name'], $conn);
+
+            $newName = repairStr($_POST['name']);
+
+            if ($obj->name != $newName) {
+              $link = testForLink($newName, $conn);
               $newLink = ' link = "'.$link.'",';
             } else {
               $newLink = '';
             }
 
             // upravit projekt v DB
-            $sql = 'UPDATE projects SET name = "'.$_POST['name'].'",'.$newLink.' info = "'.$_POST['info'].'", keywords = "'.$_POST['keywords'].'", active = "'.$_POST['active'].'" WHERE id = "'.$_POST['id'].'"';
+            $sql = 'UPDATE projects SET name = "'.$newName.'",'.$newLink.' info = "'.repairStr($_POST['info']).'", keywords = "'.repairStr($_POST['keywords']).'", active = "'.$_POST['active'].'" WHERE id = "'.$_POST['id'].'"';
             if ($conn->query($sql)) {
               $status = 'success';
               $id = $_POST['id'];
@@ -139,7 +100,7 @@ if ($conn) {
           } else if (isset($_POST['id'])) {
 
             // vytvorit form pro edit
-            $sql = 'SELECT id, name, link, info, keywords, active FROM projects WHERE id = "'.$_POST['id'].'"';
+            $sql = 'SELECT id, name, link, info, info_en, keywords, keywords_en, active FROM projects WHERE id = "'.$_POST['id'].'"';
             if ($ress = $conn->query($sql)) {
                 $obj = $ress->fetch_object();
 
@@ -148,22 +109,26 @@ if ($conn) {
                     $html .= '<br><h2>🖿 PROJEKT <span id=\\"nazevProjektu\\">'.$obj->name.'</span></h2><br>';
                     $html .= '<form method=\\"post\\" class=\\"adminForm\\" table=\\"projects\\" act=\\"edit\\" idkey=\\"'.$_POST['id'].'\\">';
                     $html .= '<ul>';
-                    $html .= '<li><a href=\\"/prj/'.$obj->link.'\\">[otevřít projekt] prj/'.$obj->link.'</a></li>';
+                    $html .= '<li><a href=\\"/prj/'.$obj->link.'\\">[otevřít projekt]</a></li>';
                     $html .= '<li><a href=\\"/admin/data/show/'.$obj->id.'\\">zobrazit data projektu</a></li>';
                     $html .= '<li><a href=\\"/admin/data/add/'.$obj->id.'\\">přidat data projektu</a></li><br>';
                     $html .= '<h3>JMÉNO AUTORA</h3>';
                     $html .= '<li><input type=\\"text\\" name=\\"autor\\" value=\\"'.$obj->name.'\\" placeholder=\\"JMÉNO AUTORA\\"></li>';
-                    $html .= '<h3>INFORMACE</h3>';
+                    $html .= '<h3>INFORMACE [CZ]</h3>';
                     $html .= '<li><textarea name=\\"info\\" placeholder=\\"INFORMACE\\">'.$obj->info.'</textarea></li>';
-                    $html .= '<h3>KLÍČOVÉ SLOVA</h3>';
-                    $html .= '<li><textarea name=\\"keywords\\" placeholder=\\"KLÍČOVÉ SLOVA\\">'.$obj->keywords.'</textarea><br><i>*oddělit čárkou</i></li>';
+                    $html .= '<h3>INFO [EN]</h3>';
+                    $html .= '<li><textarea name=\\"info_en\\" placeholder=\\"INFO\\">'.$obj->info_en.'</textarea></li>';
+                    $html .= '<h3>KLÍČOVÉ SLOVA [CZ]</h3>';
+                    $html .= '<li><textarea name=\\"keywords\\" placeholder=\\"KLÍČOVÉ SLOVA\\">'.$obj->keywords.'</textarea><br><i>*oddělit čárkou, takhle</i></li>';
+                    $html .= '<h3>KEYWORDS [EN]</h3>';
+                    $html .= '<li><textarea name=\\"keywords_en\\" placeholder=\\"KEYWORDS\\">'.$obj->keywords.'</textarea><br><i>*oddělit čárkou, takhle</i></li>';
                     $html .= '<h3>NASTAVENÍ</h3>';
                     $html .= '<li>PUBLIKOVAT <input type=\\"checkbox\\" name=\\"active\\"'.$active.'></li>';
                     $html .= '<br><br>';
                     $html .= '<li><input type=\\"submit\\" name=\\"submit\\" value=\\"ULOŽIT\\"></li>';
                     $html .= '<br><br>';
-                    $html .= '<h3>Danger zone</h3><br>';
-                    $html .= '<li id=\\"prompt\\">Opravdu smazat projekt *'.$obj->name.'* včetně všech dat patřících tomuto projektu?<br><br><a href=\\"/admin/projects/delete/'.$obj->id.'\\" class=\\"deleteThis\\">ano, odstranit celý projekt</a> / <span class=\\"togglePrompt\\">zachovat projekt</span></li><br>';
+                    $html .= '<h3>Danger zone</h3>';
+                    $html .= '<div id=\\"prompt\\">Opravdu smazat projekt *'.$obj->name.'* včetně všech dat patřících tomuto projektu?<br><br><a href=\\"/admin/projects/delete/'.$obj->id.'\\" class=\\"deleteThis\\">ano, odstranit celý projekt</a> / <span class=\\"togglePrompt\\">zachovat projekt</span></div>';
                     $html .= '<li><span class=\\"deleteThis togglePrompt\\">smazat projekt</span></li>';
                     $html .= '</ul>';
                     $html .= '</form>';
@@ -231,9 +196,9 @@ if ($conn) {
         if ($ress = $conn->query($sql)) {
 
             $html .= '<br><h2>SEZNAM PROJEKTŮ</h2><br>';
-            $html .= '<table class=\\"adminTable\\"><tr><td>ID</td><td>AUTOR</td><td>STAV</td><td>OPEN</td></tr>';
+            $html .= '<table class=\\"adminTable\\"><tr><td>ID</td><td>AUTOR</td><td>KEYWORDS</td><td>STAV</td><td>OPEN</td></tr>';
             while($obj = $ress->fetch_object()){
-                $html .= '<tr><td>'.$obj->id.'</td><td>'.$obj->name.'</td><td>'.($obj->active?'PUBLIKOVÁNO':'SKRYTO').'</td><td align=\\"center\\"><a href=\\"/admin/projects/edit/'.$obj->id.'\\"><strong>🖿</strong></a></td></tr>';
+                $html .= '<tr><td>'.$obj->id.'</td><td>'.$obj->name.'</td><td><div><div>'.$obj->keywords.'</div></div></td><td>'.($obj->active?'PUBLIKOVÁNO':'SKRYTO').'</td><td align=\\"center\\"><a href=\\"/admin/projects/edit/'.$obj->id.'\\"><strong>🖿</strong></a></td></tr>';
             }
             $html .= '</table>';
         }

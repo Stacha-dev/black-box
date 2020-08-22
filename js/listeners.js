@@ -117,16 +117,20 @@ $(document).on('click touch', '#menu .kurator', function(){
 
       // pokud se po kliku kurator zmenil
       case 'changed':
-        // reloadne memex
-        page('/memex');
         // odznaci minuleho kuratora, oznaci soucacneho
         $('.kurator.selected').removeClass('selected');
         menuTube.addClass('selected');
+        // reloadne memex
+        page('/memex');
       break;
 
       // pokud se kurator po kliku nezmenil
       case 'same':
-        // do nothing?
+        // prejde na memex pokud tam neni
+        var url = window.location.pathname;
+        if (url != '/memex') {
+          page('/memex');
+        }
       break;
 
     }
@@ -203,6 +207,7 @@ $(document).on('keypress', function(e){
   case 59: case 96:
     consoleToggle();
   break;
+  /*
   // "1" zapne menu1
   case 49:
     $('#t1 .title').trigger('click');
@@ -223,6 +228,7 @@ $(document).on('keypress', function(e){
   case 76:
     $('.listIcon').last().trigger('click');
   break;
+  */
   }
 
 });
@@ -267,7 +273,7 @@ $(document).on('mouseenter', '#list table tr[thumb]', function(e) {
   var tr = $(this),
       imageUrl = tr.attr('thumb'),
       paintNew = true,
-      pos = {'x': Math.random()*30+10,
+      pos = {'x': Math.random()*25+10,
              'y': Math.random()*70+15};
 
   // aby po najeti na radek ten radek byl zvydaznenej, ostatni odvyraznit
@@ -286,9 +292,11 @@ $(document).on('mouseenter', '#list table tr[thumb]', function(e) {
       if (post.find('img').attr('src') != imageUrl) {
 
         // kdyz neni tak ho fadeoutne a smaze
-        post.addClass('goingAway fadeout').delay(500).queue(function(){
-          post.remove().dequeue();
-        });
+        setTimeout(function(){
+          post.addClass('goingAway fadeout').delay(500).queue(function(){
+            post.remove().dequeue();
+          });
+        }, 300);
 
       } else {
 
@@ -313,6 +321,84 @@ $(document).on('mouseenter', '#list table tr[thumb]', function(e) {
       $('.post:last-child').html('<img src="'+imageUrl+'"><div class="bigPost"></div>').removeClass('fadeout');
 
     };
+
+  }
+
+});
+
+
+
+/*
+vyhledavani v listu
+*/
+
+// setup zakladnich promennych
+var searching = false,
+    hist = {'autor': 'lady', 'descrip': 'gaga'};
+
+// funkce
+$(document).on('change input', '.searchList', function(){
+
+  // povoli hledani
+  searching = true;
+
+  var autor = $('.searchAuthor').val(),
+      descrip = $('.searchDescrip').val();
+
+  // pokud uz neprobiha jine hledani a pokud neni duplicitni jako posledni
+  if (searching && !(hist.autor == autor && hist.descrip == descrip)) {
+
+    // zakaze hledani (aby dalsi dotaz nemohl hned letet dovnitr)
+    searching = false;
+    hist = {'autor': autor, 'descrip': descrip};
+
+    var idTimeout = window.setTimeout(function(){}, 0);
+
+    // odstrani predchozi probihajici timouty pokud jeste nebezi konzole
+    if (!$('#console').hasClass('log')) {
+      while (idTimeout--) {
+        window.clearTimeout(idTimeout);
+      }
+    }
+
+    // odstrani predchozi vysledky
+    $('.result, .loadingList').remove();
+
+    // nahodi loading
+    $('#seznam table').append('<tr class="loadingList"><td colspan="2" align="center"><span class="wait"><span>.</span><span>.</span><span>.</span></span></td></tr>');
+
+    // najde nove vysledky
+    $.post('/php/page/searchList.php', {'autor': autor, 'descrip': descrip}, function(res){
+
+      // prevede json vysledky do objektu
+      var obj = JSON.parse(res),
+          itt = 0,
+          html;
+
+      // vytvori radky
+      $.each(obj.results, function(i, tr){
+        html += '<tr class="result hidden" thumb="'+tr.img+'"><td>'+tr.autor+'</td><td>'+tr.descrip+'</td></tr>\n';
+      });
+
+      // odstrani loading, nahodi vysledky
+      $('.loadingList').remove();
+      $('#seznam table').append(html);
+
+      // postupne je zobrazi
+      $.each($('.hidden'), function(){
+        var tr = $(this);
+        setTimeout(function(){
+          tr.removeClass('hidden');
+        }, itt*30);
+        if (itt < 30) {
+          itt++;
+        }
+      });
+
+      // povolit dalsi hledani
+      searching = true;
+
+    });
 
   }
 
@@ -363,7 +449,7 @@ $(document).on('click touch', '.logout', function(){
 /*
 kdyz najedu na linku tak aby ten title sledoval mys
 akorat to nefunguje ani podle meho genialniho nakresu na papire
-takze sem se na to v pondeli 3/8/2020 v 17:01 zvysoka vysral
+takze sem se na to v pondeli 3/8/2020 v 17:01 z vysoka vysral
 */
 
 /*

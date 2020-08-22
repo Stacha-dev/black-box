@@ -14,6 +14,13 @@ $conn = sql();
 
 
 
+/*
+FUNKCE
+*/
+include '../fce.php';
+
+
+
 // zakladni promenne
 $imgpreload = array();
 $imgset = '';
@@ -22,7 +29,7 @@ $html = '';
 
 
 // vypise vsecky projekty
-$sql = 'SELECT id, name, keywords, link, (SELECT filename FROM projectdata WHERE pid = projects.id AND main = 1) AS mainpic FROM projects WHERE active = "1"';
+$sql = 'SELECT id, name, '.lang('keywords', 'keywords_en').' AS keywords, link, (SELECT filename FROM projectdata WHERE pid = projects.id AND main = 1) AS mainpic FROM projects WHERE active = "1"';
 if ($ress = $conn->query($sql)) {
     while($prj = $ress->fetch_object()){
 

@@ -92,6 +92,10 @@ export function page(url) {
               var file = '/php/admin/data.php',
                   pointers = {'action': path[3], 'id': path[4]};
             break;
+            case 'clusters':
+              var file = '/php/admin/curator.php',
+                  pointers = {'action': path[3], 'id': path[4]};
+            break;
           }
 
         }
@@ -243,6 +247,24 @@ export function page(url) {
                 $('#content').removeClass('fadeout');
                 title(url);
                 loading('off');
+
+                // pokud je headder nejakej ne-defaultni
+                try {
+
+                  switch (obj.headder) {
+
+                    case 'list':
+                      $('.searchList').first().trigger('input');
+                    break;
+
+                  }
+
+                } catch (e) {
+
+                  console.log(e);
+                  error('function error');
+
+                }
 
             }
 

@@ -14,6 +14,11 @@ $(function(){
       win = {"h": $(window).height(),
              "w": $(window).width()};
 
+  $(window).on('resize', function(){
+    win = {"h": $(window).height(),
+           "w": $(window).width()};
+  });
+
   // z index default na 10, blackbox() vyzaduje 3+
   window.zindex = 10;
 

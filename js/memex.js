@@ -203,13 +203,14 @@ export function links(call) {
       var keywords = [];
       $.each(netKey, function(i, tag){
 
-        if (tag[0] == id) {
+        // testuje 2 varianty, sort nefunguje?
+        if (tag[0] == id[0] || tag[0] == id[1]) {
           keywords.push('#'+tag[1]);
         }
 
       });
 
-      return keywords.join(", ");
+      return keywords.join(" ― ");
 
     }
 
@@ -301,11 +302,10 @@ export function links(call) {
                   "l": ((chor.x1+chor.x2)/2-len/2),
                   "len": len,
                   "ang": Math.atan2((chor.y1-chor.y2),(chor.x1-chor.x2))*(180/Math.PI)
-                  /*
-                  "delay": (-1)*Math.random()*5,
-                  "dur": 2+Math.random()*3
-                  */},
-          spojnice = net[itt][0]+net[itt][1],
+                 },
+          // nevim proc ale nejdou seradit pomoc .sort()
+          // takze testuju obe varianty spojeni...
+          spojnice = [net[itt][0]+net[itt][1], net[itt][1]+net[itt][0]],
           keys = matchKeywords(spojnice);
 
       log({attr, "match_tags": keys});

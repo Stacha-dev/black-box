@@ -261,6 +261,8 @@ zobrazeni v tabulce
     #seznam::-webkit-scrollbar-thumb {background: black;}
   #seznam table {width: 100%; max-width: calc(50vw - 9.15vh); border-collapse: collapse; font-size: 2vh; margin-left: calc(50vw - 9.15vh); position: relative;}
   #seznam table tr {border-bottom: 0.15vh solid black;}
+    #seznam table tr.hidden td {opacity: 0;}
+    #seznam table tr.hidden {border-bottom-color: white;}
 
     /* horni radek bude drzet nahore*/
     #seznam table tr.search td {position: sticky; top: 0; background: white; padding-bottom: 1vh;}
@@ -286,8 +288,12 @@ ADMIN
 .adminTable tr td {padding: 1vh; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); border-bottom: 0.5vh solid transparent;}
   .adminTable tr:first-child td  {background: black; color: white;}
   .adminTable tr:not(:first-child):hover td {border-bottom: 0.5vh solid black;}
+    .adminTable tr td:nth-child(3) div {width: 70vh; overflow-x: auto;}
+    /*.adminTable tr td:nth-child(3) div:nth-child(2) {position: absolute;}*/
 
   .admin input, .admin textarea {border-bottom: 0.5vh solid #dadada;}
+    .admin input[type="text"] {min-width: 30vw;}
+    .admin textarea {width: 50vw; height: 30vh;}
   .admin input[type="submit"].reminder {background: lightgreen !important;}
 
   .adminTable img, #fronta img {height: 10vh;}
@@ -296,6 +302,7 @@ ADMIN
   .wait span {animation: wait 1s infinite;}
     .wait span:nth-child(2) {animation-delay: 0.33s;}
     .wait span:nth-child(3) {animation-delay: 0.66s;}
+    .wait.big {font-size: 6vh;}
   @keyframes wait {
     80% {opacity: 0;}
     81% {opacity: 1;}
@@ -304,4 +311,4 @@ ADMIN
   .adminTable a {margin: auto 0.5vh;}
   .adminTable a.selected {background: lightgreen;}
   .adminTable a.not {background: pink;}
-  #prompt {display: none;}
+  #prompt {display: none; border: 0.25vh solid red; border-radius: 0.5vh; margin-bottom: 1vh; padding: 1vh; float: left;}

@@ -11,62 +11,21 @@ include '../sql.php';
 $conn = sql();
 
 
+
+/*
+fuknce pro testovani linku
+*/
+include '../fce.php';
+
+
+
+/*
+values
+*/
 $id = isset($_GET['id'])?$_GET['id']:false;
 $data = false;
 $dataId = false;
 $status = 'default';
-
-
-
-/*
-fce setup
-*/
-function randNazev() {
-    $rand = false;
-    $ch = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    for ($i = 0; $i < 8; $i++) {
-        $in = rand(0, strlen($ch) - 1);
-        $rand .= $ch[$in];
-    }
-    return $rand;
-}
-
-
-
-/*
-resize
-*/
-function resizeImg($file, $dest, $w, $h) {
-
-    list($width, $height) = getimagesize($file);
-
-      $r = $width/$height;
-
-      if ($w/$h > $r) {
-          $newwidth = $h*$r;
-          $newheight = $h;
-      } else {
-          $newheight = $w/$r;
-          $newwidth = $w;
-      }
-
-    // pokud se obrazek nezvetsuje po prepoctu, zmensi ho
-    if ($newwidth < $width && $newheight < $height) {
-
-      $src = imagecreatefromjpeg($file);
-      $new = imagecreatetruecolor($newwidth, $newheight);
-      imagecopyresampled($new, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-
-      return imagejpeg($new, $dest);
-
-    // pokud by se zvetsoval, proste ho jen uploadne v soucasnem stavu
-    } else {
-
-      return move_uploaded_file($file, $dest);
-
-    }
-
-}
 
 
 

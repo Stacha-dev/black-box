@@ -2,6 +2,8 @@
 session_start();
 if ($_SESSION['user'] == 'admin') {
 
+
+
 /*
 DB SETUP
 */
@@ -11,13 +13,24 @@ $conn = sql();
 
 
 /*
-main funkce
+fuknce pro testovani linku
+*/
+include '../fce.php';
+
+
+
+/*
+values
 */
 $id = false;
 $status = 'default';
 $html = '<div class=\\"admin\\"><h1>DATA</h1><br>';
 
-// pokud sme pripojeni k DB
+
+
+/*
+main funkce
+*/
 if ($conn) {
 
   // pokud je setnuta akce
@@ -41,6 +54,7 @@ if ($conn) {
 
           $html .= '<br><h2>🗁 PŘIDAT DATA do PROJEKTU '.$obj->name.'</h2><br>';
           $html .= '<ul>';
+          $html .= '<li><a href=\\"/prj/'.$obj->link.'\\">[otevřít projekt]</a></li>';
           $html .= '<li><a href=\\"/admin/data/show/'.$obj->id.'\\">zobrazit data projektu</a></li>';
           $html .= '<li><a href=\\"/admin/projects/edit/'.$obj->id.'\\">upravit projekt ['.$obj->id.'] '.$obj->name.'</a></li>';
           $html .= '</ul><br>';
@@ -65,7 +79,7 @@ if ($conn) {
 
           if (isset($_POST['sql']) && $_POST['sql'] == true && isset($_POST['id'])) {
 
-            $sql = 'UPDATE projectdata SET description = "'.$_POST['popis'].'" WHERE id = "'.$_POST['id'].'"';
+            $sql = 'UPDATE projectdata SET description = "'.repairStr($_POST['popis']).'", description_en = "'.repairStr($_POST['popis_en']).'" WHERE id = "'.$_POST['id'].'"';
             if ($conn->query($sql)) {
               $status = 'success';
               $id = $_POST['id'];
@@ -127,8 +141,11 @@ if ($conn) {
 
               while($obj = $ress->fetch_object()){
                   $html .= '<br><h2>🗁 DATA PROJEKTU '.$obj->name.'</h2><br>';
-                  $html .= '<ul><li><a href=\\"/admin/data/add/'.$obj->id.'\\">přidat data do projektu</a></li></ul>';
-                  $html .= '<ul><li><a href=\\"/admin/projects/edit/'.$obj->id.'\\">upravit projekt ['.$obj->id.'] '.$obj->name.'</a></li></ul>';
+                  $html .= '<ul>';
+                  $html .= '<li><a href=\\"/prj/'.$obj->link.'\\">[otevřít projekt]</a></li>';
+                  $html .= '<li><a href=\\"/admin/data/add/'.$obj->id.'\\">přidat data do projektu</a></li>';
+                  $html .= '<li><a href=\\"/admin/projects/edit/'.$obj->id.'\\">upravit projekt ['.$obj->id.'] '.$obj->name.'</a></li>';
+                  $html .= '</ul>';
               }
           }
 
@@ -136,7 +153,7 @@ if ($conn) {
           $sql = 'SELECT * FROM projectdata WHERE pid = "'.$_POST['id'].'"';
           if ($ress = $conn->query($sql)) {
 
-              $html .= '<br><table class=\\"adminTable\\"><tr><td>ID</td><td>DATA</td><td>POPIS</td><td>AKCE</td></tr>';
+              $html .= '<br><table class=\\"adminTable\\"><tr><td>ID</td><td>DATA</td><td>POPIS CZ/EN</td><td>AKCE</td></tr>';
               while($obj = $ress->fetch_object()){
 
                   $plus = $obj->display?'-':'+';
@@ -145,7 +162,7 @@ if ($conn) {
                   $main = $obj->main?'selected':'not';
 
                   $html .= '<tr><td>'.$obj->id.'</td><td><img src=\\"/data/projects/'.$obj->filename.'.jpg\\"></td>';
-                  $html .= '<td><form method=\\"post\\" act=\\"edit\\" class=\\"adminForm\\" table=\\"data\\" idKey=\\"'.$obj->id.'\\"><input name=\\"popis\\" placeholder=\\"POPIS\\" value=\\"'.$obj->description.'\\"><input type=\\"submit\\" value=\\"ULOŽIT\\"></form></td>';
+                  $html .= '<td><form method=\\"post\\" act=\\"edit\\" class=\\"adminForm\\" table=\\"data\\" idKey=\\"'.$obj->id.'\\"><input name=\\"popis\\" placeholder=\\"POPIS\\" value=\\"'.$obj->description.'\\" autocomplete=\\"off\\"><input name=\\"popis_en\\" placeholder=\\"DESCRIPTION\\" value=\\"'.$obj->description_en.'\\" autocomplete=\\"off\\"><input type=\\"submit\\" value=\\"ULOŽIT\\"></form></td>';
                   $html .= '<td><a href=\\"/admin/data/display/'.$_POST['id'].'-'.$obj->id.'-'.$command.'\\" class=\\"'.$display.'\\">[KURÁTOR'.$plus.']</a><a href=\\"/admin/data/main/'.$_POST['id'].'-'.$obj->id.'\\" class=\\"'.$main.'\\">[HLAVNÍ]</a><a href=\\"/admin/data/delete/'.$obj->id.'\\">[×]</a></td></tr>';
 
               }
@@ -186,7 +203,6 @@ if ($conn) {
 
           }
 
-
       break;
 
       // oznaceni jako hlavni fotka
@@ -211,7 +227,6 @@ if ($conn) {
             $html .= '<br><h2>CHYBÍ ID</h2>';
 
           }
-
 
       break;
 
