@@ -80,24 +80,24 @@ if ($conn) {
     // formular pro vygenerovani noveho setu clusteru
     $html .= '<h2>VYGENEROVAT NOVOU VERZI AI KURÁTORA</h2>';
     $html .= '<br><ul>';
-    $html .= '<li>pro potvrzení startu generování napiš \\"<strong>POTVRZUJI</strong>\\" do textového pole</li>';
+    $html .= '<li>ke spuštění je nutno napsat \\"<strong>POTVRZUJI</strong>\\" do textového pole</li>';
     $html .= '<li>po dobu generování je <strong>NUTNO ZŮSTAT NA TÉTO STRÁNCE</strong></li>';
-    $html .= '<li>generování nové mapy clusterů trvá cca 5-15 minut</li>';
+    $html .= '<li>generování nové mapy clusterů může trvat <strong>až 20 minut</strong></li>';
     $html .= '</ul><br>';
     $html .= '<form method=\\"post\\" act=\\"add\\" class=\\"clusterForm\\" table=\\"clusters\\"><input name=\\"pojistka\\" placeholder=\\"POTVRZUJI\\" autocomplete=\\"off\\"><input type=\\"submit\\" value=\\"SPUSTIT GENERÁTOR\\"></form>';
     $html .= '<div id=\\"clusterLoading\\"></div>';
 
     // zobrazi se historie vygenerovanych clusteru
-    $sql = 'SELECT * FROM clusters';
+    $sql = 'SELECT * FROM clusters ORDER BY id DESC';
     if ($ress = $conn->query($sql)) {
 
         $html .= '<br><table class=\\"adminTable\\"><tr><td>ID</td><td>DATUM</td><td>POČET</td><td>AKCE</td></tr>';
         while($obj = $ress->fetch_object()){
 
-            $arr = json_decode($obj->clusters, true);
+            $size = substr_count($obj->clusters, ",")+substr_count($obj->clusters, "|");
 
             $html .= '<tr><td>'.$obj->id.'</td><td>'.$obj->datum.'</td>';
-            $html .= '<td>'.sizeof($arr).'</td>';
+            $html .= '<td>'.$size.'</td>';
             $html .= '<td><a href=\\"/admin/clusters/delete/'.$obj->id.'\\">[×]</a></td></tr>';
 
         }

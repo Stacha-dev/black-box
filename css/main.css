@@ -239,10 +239,11 @@ ju-das juda -a -as
 
     .post.info .content {height: 56vh; overflow-y: scroll; padding: 0vh 2vh 2vh 2vh; float: left; margin-top: 2vh; width: calc(100% - 4vh);}
       .post.info .content::-webkit-scrollbar-thumb {background: black;}
-      .post.info .content li {list-style: none;}
+      .post.info .content li {list-style: none; padding-right: 4vh;}
+        .post.info .content a:hover {text-decoration: underline !important;}
     .post.info .title {padding: 2vh; width: calc(100% - 4vh);}
       .post.info .title .name {float: left; overflow-x: auto; width: 40.5vh;}
-    .post.info li .locate {display: none; float: right; background: url('/data/search.png') center center; background-size: cover; width: 3vh; height: 3vh; transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
+    .post.info li .locate {display: none; position: absolute; right: 2.5vh; background: url('/data/search.png') center center; background-size: cover; width: 3vh; height: 3vh; margin-top: -3vh; transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
         .post.info li:hover .locate {display: block;}
         .post.info li .locate:hover {cursor: pointer; opacity: 0.5;}
 
@@ -281,8 +282,8 @@ zobrazeni v tabulce
 ADMIN
 */
 .admin a:hover {text-decoration: underline;}
-.logout, .deleteThis {color: red;}
-         .logout:hover, .deleteThis:hover, .togglePrompt:hover {text-decoration: underline; cursor: pointer;}
+.logout, .deleteThis, .red {color: red;}
+  .logout:hover, .deleteThis:hover, .togglePrompt:hover {text-decoration: underline; cursor: pointer;}
 /* tabulka vypisu veci */
 .adminTable {border-collapse: collapse;}
 .adminTable tr td {padding: 1vh; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); border-bottom: 0.5vh solid transparent;}

@@ -11,7 +11,7 @@ def tsne(features, dims=2, write_to=None, tsne_kwargs=None):
     tsne_kwargs['n_components'] = dims
     tsne_kwargs['random_state'] = np.random.RandomState(0)
 
-    print('t-SNE: Reducing features to {} dimensions'.format(dims))
+    ## print('t-SNE: Reducing features to {} dimensions'.format(dims))
 
     # Don't consider the first unique ID column
     features_salient = features.copy().drop(columns=[id_col_name], axis=1)
@@ -21,8 +21,7 @@ def tsne(features, dims=2, write_to=None, tsne_kwargs=None):
 
     if write_to is not None:
         try:
-            reduced.to_csv(write_to, index=False)
-            print('Wrote reduced features to "{}"'.format(write_to))
+            reduced.to_csv(write_to, index=False) ## print('Wrote reduced features to "{}"'.format(write_to))
         except Exception as e:
             print('\nWARNING - Could not write results to file: "{}"'.format(e))
 
@@ -35,7 +34,7 @@ def pca(features, dims=2, write_to=None, pca_kwargs=None):
     id_col_name = features.columns[0]
     pca_kwargs['n_components'] = dims
 
-    print('PCA: Reducing features to {} dimensions'.format(dims))
+    ## print('PCA: Reducing features to {} dimensions'.format(dims))
 
     # Don't consider the first unique ID column
     features_salient = features.copy().drop(columns=[id_col_name], axis=1)
@@ -45,8 +44,7 @@ def pca(features, dims=2, write_to=None, pca_kwargs=None):
 
     if write_to is not None:
         try:
-            reduced.to_csv(write_to, index=False)
-            print('Wrote reduced features to "{}"'.format(write_to))
+            reduced.to_csv(write_to, index=False) ## print('Wrote reduced features to "{}"'.format(write_to))
         except Exception as e:
             print('\nWARNING - Could not write results to file: "{}"'.format(e))
 

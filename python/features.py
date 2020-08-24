@@ -1,4 +1,5 @@
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from keras import applications
 from keras.applications.vgg16 import preprocess_input
 from keras.preprocessing import image
@@ -73,12 +74,12 @@ def extract_features(filepath, model='VGG19', write_to=None):
     resulting extracted features. Use write_to=<some_filepath> to save the
     features somewhere. """
 
-    print('Extracting features')
+    ## print('Extracting features')
 
     # Get the model
-    print('Acquiring model "{}"'.format(model), end='')
+    ## print('Acquiring model "{}"'.format(model), end='')
     m = named_model(model)
-    print('\rAcquired model\t\t\t\t\t')
+    ## print('\rAcquired model\t\t\t\t\t')
 
     # Get the image filepaths
     filepath = filepath.replace('\\', '/')
@@ -105,15 +106,15 @@ def extract_features(filepath, model='VGG19', write_to=None):
     # And the image filenames
     img_fns = [fp.replace('\\', '/').rsplit('/', 1)[-1] for fp in img_fps]
 
-    print('Found {} images'.format(len(img_fns)))
+    ## print('Found {} images'.format(len(img_fns)))
 
     # Run the extraction over each image
     features = []
     for (i, fp) in enumerate(img_fps):
-        print('\rProcessing: {:.2f}%\t\t'.format((i + 1) / len(img_fps) * 100), end='', flush=True)
+        ## print('\rProcessing: {:.2f}%\t\t'.format((i + 1) / len(img_fps) * 100), end='', flush=True)
         features.append(_extract(fp, m))
 
-    print('\nSuccess')
+    ## print('\nSuccess')
 
     # Make into a DataFrame and add an ID column
     features_df = DF(features, dtype=object)
@@ -123,7 +124,7 @@ def extract_features(filepath, model='VGG19', write_to=None):
     if write_to is not None:
         try:
             features_df.to_csv(write_to, index=False)
-            print('Wrote features to: "{}"'.format(write_to))
+            ## print('Wrote features to: "{}"'.format(write_to))
         except Exception as e:
             print('WARNING: Feature extraction could not write to file: "{}"'.format(e))
 

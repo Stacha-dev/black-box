@@ -115,13 +115,14 @@ $(document).on('submit', '.clusterForm', function(e) {
   if (pojistka.toUpperCase() == "POTVRZUJI") {
 
     $('form').hide();
+    $('#clusterLoading').html('<strong class="red"><br>GENERUJÍ SE NOVÉ CLUSTERY</strong><br><span class="wait big"><span>.</span><span>.</span><span>.</span></span><br><strong class="red"><br>NEOPOUŠTĚJTE TUTO STRÁNKU</strong><br><br>');
 
       // lady gaga make it work
       $.ajax({
-          url: '/php/admin/clustersExe.php',
-          beforeSend: function(e) {
-            $('#clusterLoading').html('<span class="wait big"><span>.</span><span>.</span><span>.</span></span><br><br>');
-          },
+          type: 'POST',
+          url: '/python/clustersExe.php',
+          data: {'url': '../data/projects'},
+          timeout: 1*60*1000,
           success: function (data) {
 
             // zkusi jestli se vrati json
@@ -132,16 +133,27 @@ $(document).on('submit', '.clusterForm', function(e) {
                 // pokud je to uspesny to generovani, tak posle vysledek do databaze
                 if (obj.status == "success") {
 
-                  // post co to posle do databaze ten json
-                  $.post('/php/admin/clustersUpload.php', {'data': obj.result}, function(res){
+                  $('#clusterLoading').html('<h1>CLUSTERS OK, SQL INSERT <span class="wait"><span>.</span><span>.</span><span>.</span></span></h1>');
 
+                  // zpracuje vysledky
+                  var data = JSON.stringify(obj.result.clusters);
+                  console.log(data);
+
+                  // post co to posle do databaze ten json
+                  $.post('/php/admin/clustersUpload.php', {'data': data}, function(res){
+
+                     console.log(res);
                      var result = JSON.parse(res);
+
+                     // jestli to vyslo, napise ok!
                      if (result.status == 'success') {
 
+                       $('#clusterLoading').html('<h1>CLUSTERY VYGENEROVÁNY A ULOŽENY</h1><ul><li><a href="/admin/clusters">potvrdit, obnovit seznam</a></li></ul>');
 
                      } else {
 
                        console.log(result);
+                       $('#clusterLoading').html('<h1 class="red">SQL ERROR</h1>');
                        error('error saving results');
 
                      }
@@ -151,7 +163,7 @@ $(document).on('submit', '.clusterForm', function(e) {
                 } else {
 
                   console.log(obj);
-                  $('#clusterLoading').html('ERROR');
+                  $('#clusterLoading').html('<h1 class="red">CLUSTERS PYTHON ERROR</h1>');
 
                 }
 
@@ -161,8 +173,10 @@ $(document).on('submit', '.clusterForm', function(e) {
                 console.log(data, e);
 
                 if (e instanceof SyntaxError) {
+                    $('#clusterLoading').html('<h1 class="red">JSON ERROR</h1>');
                     error('data not json');
                 } else {
+                    $('#clusterLoading').html('<h1 class="red">GENERAL ERROR</h1>');
                     error('general error');
                 }
 
@@ -171,7 +185,7 @@ $(document).on('submit', '.clusterForm', function(e) {
           },
           error: function (e) {
             console.log(e);
-            $('#clusterLoading').html('ERROR');
+            $('#clusterLoading').html('<h1 class="red">AJAX<=>PHP ERROR</h1>');
           }
       });
 

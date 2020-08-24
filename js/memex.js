@@ -237,7 +237,8 @@ export function links(call) {
     // projede vsechny projekty
     $.each(project, function(i, pr){
 
-      // projede vsechny tagy v projektu
+      // projede vsechny tagy v projektu pokud ma nejake tagy
+      if (pr.tag.length > 0 && pr.tag[0] != '') {
       $.each(pr.tag, function(ti, tg){
 
         // porovna je se vsema ostatnima tagama v ostatnich projektech
@@ -271,6 +272,7 @@ export function links(call) {
         });
 
       });
+      }
 
     });
 

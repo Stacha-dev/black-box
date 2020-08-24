@@ -43,9 +43,13 @@ export function page(url) {
 
     case 'prj': // otevreny projekt
       var file = '/php/page/blackbox.php',
-          blackboxPg = url;
+          blackboxPg = url,
           pointers = {"prjId": path[2]},
+          mainId = $('#mainPicId').attr('imgid'),
           logBr = true;
+      if (typeof mainId !== 'undefined') {
+        pointers["firstImg"] = mainId;
+      }
     break;
 
 

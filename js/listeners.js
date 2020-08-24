@@ -54,7 +54,6 @@ $(document).on('click touch', 'a', function(e){
 /*
 prepinac jazyku
 */
-
 $(document).on('click touch', '.langIcon', function(){
 
     var menuTube = $(this),
@@ -79,6 +78,7 @@ po kliknuti na projekt v memex(), se triggerne <a> uvnitr .prj divu
 */
 $(document).on('click touch', '.prj', function(e){
 
+  $(this).find('.mainPic').attr('id', 'mainPicId');
   $(this).find('a').trigger('click');
 
   // zavrit bocni menu

@@ -90,14 +90,14 @@ def main():
             clusters[label].append(img)
 
         result = {
-            "success": True,
+            "success": "true",
             "error": [],
             "clusters": clusters
         }
         print(result)
     else:
         result = {
-            "success": False,
+            "success": "false",
             "error": "No path",
             "clusters": []
         }

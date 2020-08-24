@@ -56,7 +56,7 @@ export function log(data) {
   */
   // variables
   var con = $('#console'),
-      delay = logCount*20+(Math.random()*10), // delay = logCount*30+(Math.random()*20),
+      delay = logCount*5+(Math.random()*10), // delay = logCount*30+(Math.random()*20),
       totalDelay =+ delay;
 
       // pokud se vola log znova, tak zobrazit
