@@ -6,7 +6,7 @@
 
 import {page} from './router.js';
 import {links} from './memex.js';
-import {disableScroll, consoleToggle, menu, menuContent, loading, error} from './router_fce.js';
+import {disableScroll, consoleToggle, menu, menuContent, loading, error, isHorizontal} from './router_fce.js';
 
 
 
@@ -20,6 +20,8 @@ $(document).ready(function() {
       page(url);
       // priloadne menu s textama
       menu('create');
+      // check for vertical devices
+      isHorizontal();
 
 });
 
@@ -41,7 +43,7 @@ $(window).on('popstate', function(e){
 /*
 prestavba <a> tagu
 */
-$(document).on('click touch', 'a', function(e){
+$(document).on('click touch', 'a:not(.esc)', function(e){
 
   var link = $(this).attr('href');
   page(link);
@@ -113,6 +115,9 @@ $(document).on('click touch', '#menu .kurator', function(){
   // provest zmenu v session
   $.post('/php/kurator.php', {kurator: kurator}, function(res){
 
+    // adresa
+    var url = window.location.pathname;
+
     switch (res) {
 
       // pokud se po kliku kurator zmenil
@@ -120,19 +125,20 @@ $(document).on('click touch', '#menu .kurator', function(){
         // odznaci minuleho kuratora, oznaci soucacneho
         $('.kurator.selected').removeClass('selected');
         menuTube.addClass('selected');
-        // reloadne memex
-        page('/memex');
       break;
 
       // pokud se kurator po kliku nezmenil
       case 'same':
-        // prejde na memex pokud tam neni
-        var url = window.location.pathname;
-        if (url != '/memex') {
-          page('/memex');
-        }
+        // reloadne nebo prejde na memex dole
       break;
 
+    }
+
+    // kam potom co se zmeni kurator
+    if (url != '/memex' && url != '/list') {
+      page('/memex');
+    } else {
+      page(url);
     }
 
   });
@@ -148,21 +154,26 @@ pri zmene velikosti okna je potreba prepocitat pozice pozice linek*
 */
 $(window).on('resize', function(e){
 
-  // pokud vubec linky existuji
-  if ($('.line').length) {
+  // pokud je zarizeni horizontalne
+  if (isHorizontal()) {
 
-    // prepocitat linky
-    $('.line').remove();
-    links('resize');
+    // pokud vubec linky existuji
+    if ($('.line').length) {
 
-  }
+      // prepocitat linky
+      $('.line').remove();
+      links('resize');
 
-  // pokud konzole disabled scroll (neni aktivni), po resizu presune na konec
-  var con = $("#console");
-  if (con.hasClass('disableScroll')) {
-    setTimeout(function(){
-      con.stop().animate({scrollTop: con.prop('scrollHeight') - con.innerHeight()}, 500);
-    }, 1500);
+    }
+
+    // pokud konzole disabled scroll (neni aktivni), po resizu presune na konec
+    var con = $("#console");
+    if (con.hasClass('disableScroll')) {
+      setTimeout(function(){
+        con.stop().animate({scrollTop: con.prop('scrollHeight') - con.innerHeight()}, 500);
+      }, 1500);
+    }
+
   }
 
 });
@@ -333,11 +344,11 @@ vyhledavani v listu
 */
 
 // setup zakladnich promennych
-var searching = false,
-    hist = {'autor': 'lady', 'descrip': 'gaga'};
+var searching = false;
+window.hist = {'autor': 'lady', 'descrip': 'gaga'};
 
 // funkce
-$(document).on('change input', '.searchList', function(){
+$(document).on('input', '.searchList', function(){
 
   // povoli hledani
   searching = true;
@@ -346,7 +357,7 @@ $(document).on('change input', '.searchList', function(){
       descrip = $('.searchDescrip').val();
 
   // pokud uz neprobiha jine hledani a pokud neni duplicitni jako posledni
-  if (searching && !(hist.autor == autor && hist.descrip == descrip)) {
+  if (searching && !(window.hist.autor == autor && window.hist.descrip == descrip)) {
 
     // zakaze hledani (aby dalsi dotaz nemohl hned letet dovnitr)
     searching = false;

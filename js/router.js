@@ -22,7 +22,8 @@ export function page(url) {
       pointers,
       memexPg = false,
       blackboxPg = false,
-      logBr = false;
+      logBr = false,
+      fadein = 'fadeoutUp';
 
   // udela pole z url podle /
   if (url != null) {
@@ -50,6 +51,7 @@ export function page(url) {
       if (typeof mainId !== 'undefined') {
         pointers["firstImg"] = mainId;
       }
+      fadein = 'fadeout';
     break;
 
 
@@ -146,7 +148,7 @@ export function page(url) {
   setTimeout(function(){
 
         content.remove();
-        $("body").append($('<div>', {id: 'content', class: 'fadeout'}));
+        $("body").append($('<div>', {id: 'content', class: fadein}));
 
         $.post(file, pointers, function(res){
 
@@ -248,7 +250,7 @@ export function page(url) {
 
                 // loadne se content
                 $("#content").append(obj.html);
-                $('#content').removeClass('fadeout');
+                $('#content').removeClass('fadeoutUp');
                 title(url);
                 loading('off');
 
@@ -258,6 +260,7 @@ export function page(url) {
                   switch (obj.headder) {
 
                     case 'list':
+                      window.hist = {'autor': 'lady', 'descrip': 'gaga'}
                       $('.searchList').first().trigger('input');
                     break;
 

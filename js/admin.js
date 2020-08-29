@@ -122,12 +122,13 @@ $(document).on('submit', '.clusterForm', function(e) {
           type: 'POST',
           url: '/python/clustersExe.php',
           data: {'url': '../data/projects'},
-          timeout: 1*60*1000,
+          timeout: 60*60*1000, // 1h timeout
           success: function (data) {
 
             // zkusi jestli se vrati json
             try {
 
+                console.log(data);
                 var obj = JSON.parse(data);
 
                 // pokud je to uspesny to generovani, tak posle vysledek do databaze
@@ -196,6 +197,31 @@ $(document).on('submit', '.clusterForm', function(e) {
   }
 
   e.preventDefault();
+
+});
+
+
+
+// zaradi do kuryra
+$(document).on('touch click', '.toggleKurator', function(){
+
+  var span = $(this),
+      data = span.attr('data');
+
+  $.post('/php/admin/data.php', {'action': 'display', 'id': data}, function(res){
+
+    var obj = JSON.parse(res);
+
+    switch(obj.status) {
+      case 'added':
+        span.removeClass('not').addClass('selected').html('[KURÁTOR-]');
+      break;
+      case 'removed':
+        span.removeClass('selected').addClass('not').html('[KURÁTOR+]');
+      break;
+    }
+
+  });
 
 });
 

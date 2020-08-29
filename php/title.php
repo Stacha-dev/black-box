@@ -1,17 +1,28 @@
 <?php
+session_start();
 
-  if (isset($_POST['title'])) {
 
-    $title = $_POST['title'];
 
-      if ($title == '/') {
+/*
+DB SETUP
+*/
+include './sql.php';
+$conn = sql();
 
-        echo '';
 
-      } else {
 
-        echo 'TITLE';
+/*
+FUNKCE
+*/
+include './fce.php';
 
-      }
 
-  }
+
+/*
+titulek setup
+*/
+if (isset($_POST['url'])) {
+
+  echo titulek($_POST['url'], $conn);
+
+}

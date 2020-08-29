@@ -163,7 +163,7 @@ if ($conn) {
 
                   $html .= '<tr><td>'.$obj->id.'</td><td><img src=\\"/data/projects/'.$obj->filename.'.jpg\\"></td>';
                   $html .= '<td><form method=\\"post\\" act=\\"edit\\" class=\\"adminForm\\" table=\\"data\\" idKey=\\"'.$obj->id.'\\"><input name=\\"popis\\" placeholder=\\"POPIS\\" value=\\"'.$obj->description.'\\" autocomplete=\\"off\\"><input name=\\"popis_en\\" placeholder=\\"DESCRIPTION\\" value=\\"'.$obj->description_en.'\\" autocomplete=\\"off\\"><input type=\\"submit\\" value=\\"ULOŽIT\\"></form></td>';
-                  $html .= '<td><a href=\\"/admin/data/display/'.$_POST['id'].'-'.$obj->id.'-'.$command.'\\" class=\\"'.$display.'\\">[KURÁTOR'.$plus.']</a><a href=\\"/admin/data/main/'.$_POST['id'].'-'.$obj->id.'\\" class=\\"'.$main.'\\">[HLAVNÍ]</a><a href=\\"/admin/data/delete/'.$obj->id.'\\">[×]</a></td></tr>';
+                  $html .= '<td><span class=\\"toggleKurator '.$display.'\\" data=\\"'.$_POST['id'].'-'.$obj->id.'-'.$command.'\\">[KURÁTOR'.$plus.']</span><a href=\\"/admin/data/main/'.$_POST['id'].'-'.$obj->id.'\\" class=\\"'.$main.'\\">[HLAVNÍ]</a><a href=\\"/admin/data/delete/'.$obj->id.'\\">[×]</a></td></tr>';
 
               }
               $html .= '</table>';
@@ -183,10 +183,12 @@ if ($conn) {
               case 'add':
                 $display = 1;
                 $msg = 'ZAŘAZENO DO VÝBĚRU';
+                $status = 'added';
               break;
               case 'remove':
                 $display = 0;
                 $msg = 'VYŘAZENO Z VÝBĚRU';
+                $status = 'removed';
               break;
             }
 

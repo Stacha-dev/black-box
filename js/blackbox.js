@@ -22,14 +22,14 @@ export function blackbox() {
   function chords() {
 
         // 70 + 15 ==> aby byl odskok (max width & height je 30vh ==> 30/2=15 ==> range 15-85)
-    var x = Math.floor(Math.random()*70)+15,
-        y = Math.floor(Math.random()*70)+15;
+    var x = Math.floor(Math.random()*80)+10,
+        y = Math.floor(Math.random()*80)+10;
 
     return {"x": x, "y": y};
 
   }
 
-
+  // pro kazdy post (fce start)
   $('.post').each(function() {
 
     // set vars and generate chords
@@ -58,7 +58,13 @@ export function blackbox() {
 // naloaduje posty az na konci zobrazovani logu ;)
 export function loadPosts() {
 
-  var itt = 0;
+  var itt = 0,
+      small = false,
+      pocet = window.blackbox.length;
+
+  if (pocet > 40) {
+    small = true;
+  }
 
   $.each(window.blackbox, function(i, elem) {
 
@@ -69,7 +75,11 @@ export function loadPosts() {
         post.css({top: elem.y+'vh', left: elem.x+'vw'});
         post.removeClass('large');
 
-         // 2500 ==> cas co trva fadein animace + cas na rozkoukani
+        if (small) {
+          post.addClass('small');
+        }
+
+         // 1500 ==> cas co trva fadein animace + cas na rozkoukani
       }, 1500+itt*100+(Math.random()*50));
 
       itt++;
@@ -82,6 +92,9 @@ export function loadPosts() {
 }
 
 
+
+// OPENBOX
+// udela supercool naminaci mezi memexem a blckboxem
 export function openBox(link) {
 
   var orig = $('a[href="'+link+'"]').closest('.prj'),
@@ -92,6 +105,7 @@ export function openBox(link) {
 
   log({'fce': 'shadowMaster', 'link': link, 'started': true});
 
+  // here goes magic <3 thx gaga
   $('body').append($('<div>', {class: 'prj',
                                id: 'shadowMaster',
                                css: {left: obj.pos.left+obj.w/2,

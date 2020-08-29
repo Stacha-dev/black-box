@@ -1,16 +1,24 @@
-// ERRORS
-////////////////////////////////////////////////////////////////////////////////
+/*
+obecne funkce
+venuji lady gaga
+*/
+
+
+
+/*
+error handler
+*/
 export function error(e) {
 
-  //log({"error": true, "msg": e});
   alert(e);
 
 }
 
 
 
-// LOADING NAHORE LISTA
-////////////////////////////////////////////////////////////////////////////////
+/*
+loading lista
+*/
 export function loading(e) {
 
   switch (e) {
@@ -23,7 +31,7 @@ export function loading(e) {
       }
 
       // zapina loading bary
-      if (!$('#loading').length) {
+      if (!$('.loading').length) {
         $('body').append('<div class="loading t"></div><div class="loading r"></div><div class="loading b"></div><div class="loading l"></div>');
           $('.loading').fadeIn(100, function(){
             // set interval => pojistka? (dole)
@@ -34,7 +42,7 @@ export function loading(e) {
       window.timeout = setTimeout(function(){
         loading('off');
         error('request timeout, please reload page');
-      }, 60000);
+      }, 120*1000);
 
     break;
 
@@ -61,8 +69,9 @@ export function loading(e) {
 
 
 
-// URL A TITULEK STRANKY
-////////////////////////////////////////////////////////////////////////////////
+/*
+prida title strance a upravi jeji url
+*/
 export function title(new_url) {
 
   var title = new_url;
@@ -78,8 +87,9 @@ export function title(new_url) {
 
 
 
-// PREPINA MOZNOST SCROLLOVAT V DIVU
-////////////////////////////////////////////////////////////////////////////////
+/*
+vypina moznost scrollovat pro urcity element
+*/
 export function disableScroll(elem, state) {
 
   const noScroll = function(e){
@@ -106,8 +116,9 @@ export function disableScroll(elem, state) {
 
 
 
-// ZOBRAZIT/SCHOVAT KONZOLI
-////////////////////////////////////////////////////////////////////////////////
+/*
+toggle konzole
+*/
 export function consoleToggle(){
 
   const con = $('#console');
@@ -123,8 +134,9 @@ export function consoleToggle(){
 
 
 
-// MENU ==> NALOADUJE HO DO STRANKY
-////////////////////////////////////////////////////////////////////////////////
+/*
+naloaduje MENU do stranky
+*/
 export function menu(action) {
 
   switch (action) {
@@ -136,7 +148,9 @@ export function menu(action) {
 
         $.get('/php/page/menu.php', function(obsah){
 
-            $('body').append($('<div>', {id: 'menu', class: 'hidden'}).html(obsah));
+            $('body').append($('<div>', {id: 'menu', class: 'hidden'}).html(obsah).delay(500).queue(function(){
+              $(this).removeClass('hidden').dequeue();
+            }));
 
         });
 
@@ -157,8 +171,9 @@ export function menu(action) {
 
 
 
-// MENU CONTENT SPINACE
-////////////////////////////////////////////////////////////////////////////////
+/*
+menu tlaticka spinace obsahu
+*/
 export function menuContent(id) {
 
   function toggleMenu(id) {
@@ -178,9 +193,6 @@ export function menuContent(id) {
   }
 
   var content = $('#'+id).find('.content');
-
-  // odloaduje vsechny contenty
-  // $('.text .content').removeClass('loaded');
 
   // pokud neni zadny content, tak ho vytvori
   if (!content.length) {
@@ -210,7 +222,63 @@ export function menuContent(id) {
   // jinak kdyz uz je vytvorenej, tak ho jen znova zobrazi
   } else {
     toggleMenu(id);
-    // content.addClass('loaded');
   }
 
 }
+
+
+
+/*
+kontrolor jestli je stranka horizontalni, vraci true/false
+*/
+export function isHorizontal(){
+
+  var win = {'w': $(window).width(),
+             'h': $(window).height()};
+
+  // pokud je vertikalni obraz
+  if (win.w/win.h < 1) {
+    // ukaze div s obrazkem at si otoci telefon
+    if (!$('#turnHorizontal').length) {
+    	$('body').append($('<div>', {id: 'turnHorizontal', class: 'fadeout'}).delay(500).queue(function(){$(this).removeClass('fadeout').dequeue();}));
+    }
+    // vrati false
+    return false;
+  // pokud je horizontalni obraz
+  } else {
+    // pokud je div s legendou, odstrani ho
+    if ($('#turnHorizontal').length) {
+      $('#turnHorizontal').remove();
+    }
+    // vrati false
+    return true;
+  }
+
+}
+
+
+
+/*
+prepinac jazyku
+*/
+export function jazyk(cz, en) {
+
+  switch($('html').attr('lang')) {
+    case 'cs': return cz; break;
+    default: case 'en': return en; break;
+  }
+
+}
+
+
+
+/*
+EOF
+*/
+
+
+
+/*
+just kidding
+love your godess lady gaga
+*/

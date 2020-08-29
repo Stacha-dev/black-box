@@ -88,7 +88,7 @@ if ($conn) {
             }
 
             // upravit projekt v DB
-            $sql = 'UPDATE projects SET name = "'.$newName.'",'.$newLink.' info = "'.repairStr($_POST['info']).'", keywords = "'.repairStr($_POST['keywords']).'", active = "'.$_POST['active'].'" WHERE id = "'.$_POST['id'].'"';
+            $sql = 'UPDATE projects SET name = "'.$newName.'",'.$newLink.' info = "'.repairStr($_POST['info']).'", info_en = "'.repairStr($_POST['info_en']).'", keywords = "'.$_POST['keywords'].'", keywords_en = "'.$_POST['keywords_en'].'", active = "'.$_POST['active'].'" WHERE id = "'.$_POST['id'].'"';
             if ($conn->query($sql)) {
               $status = 'success';
               $id = $_POST['id'];
@@ -115,13 +115,13 @@ if ($conn) {
                     $html .= '<h3>JMÉNO AUTORA</h3>';
                     $html .= '<li><input type=\\"text\\" name=\\"autor\\" value=\\"'.$obj->name.'\\" placeholder=\\"JMÉNO AUTORA\\"></li>';
                     $html .= '<h3>INFORMACE [CZ]</h3>';
-                    $html .= '<li><textarea name=\\"info\\" placeholder=\\"INFORMACE\\">'.$obj->info.'</textarea></li>';
+                    $html .= '<li><textarea name=\\"info\\" placeholder=\\"INFORMACE\\">'.editStr($obj->info).'</textarea></li>';
                     $html .= '<h3>INFO [EN]</h3>';
-                    $html .= '<li><textarea name=\\"info_en\\" placeholder=\\"INFO\\">'.$obj->info_en.'</textarea></li>';
+                    $html .= '<li><textarea name=\\"info_en\\" placeholder=\\"INFO\\">'.editStr($obj->info_en).'</textarea></li>';
                     $html .= '<h3>KLÍČOVÉ SLOVA [CZ]</h3>';
                     $html .= '<li><textarea name=\\"keywords\\" placeholder=\\"KLÍČOVÉ SLOVA\\">'.$obj->keywords.'</textarea><br><i>*oddělit čárkou, takhle</i></li>';
                     $html .= '<h3>KEYWORDS [EN]</h3>';
-                    $html .= '<li><textarea name=\\"keywords_en\\" placeholder=\\"KEYWORDS\\">'.$obj->keywords.'</textarea><br><i>*oddělit čárkou, takhle</i></li>';
+                    $html .= '<li><textarea name=\\"keywords_en\\" placeholder=\\"KEYWORDS\\">'.$obj->keywords_en.'</textarea><br><i>*oddělit čárkou, takhle</i></li>';
                     $html .= '<h3>NASTAVENÍ</h3>';
                     $html .= '<li>PUBLIKOVAT <input type=\\"checkbox\\" name=\\"active\\"'.$active.'></li>';
                     $html .= '<br><br>';
@@ -155,8 +155,10 @@ if ($conn) {
 
                 $filename = $obj->filename.'.jpg';
                 chmod('../../data/projects/'.$filename, 0777);
-                if (!unlink('../../data/projects/'.$filename)) {
-                  $html .= '<br><h2>CHYBA, "'.$filename.'" NESMAZÁNO</h2>';
+                if (unlink('../../data/projects/'.$filename)) {
+                  $html .= '<br><h2>CHYBA, \\"'.$filename.'\\" NESMAZÁNO</h2>';
+                } else {
+                  $html .= '<br><h2>\\"'.$filename.'\\" SMAZÁNO</h2>';
                 }
 
               }

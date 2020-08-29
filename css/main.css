@@ -26,6 +26,14 @@ h1, h2 {margin: 0; padding: 0;}
 ::selection {color: white; background: black;}
 
 /*
+blokace pro vertikalni zarizeni
+*/
+@media (max-aspect-ratio: 1/1) {
+  #content, #console, #menu {display: none !important;}
+}
+#turnHorizontal {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 80vh; background: url('/data/turnHorizontal.png') center center no-repeat; background-size: contain; transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);}
+
+/*
 form buttons
 inputs, textareas, ...
 */
@@ -165,6 +173,12 @@ uuuuuh (pain)
     #menu .content::-webkit-scrollbar-thumb {background: black;}
 
   #menu .content h1 {margin: 0; padding: 0; margin-bottom: 3vh; font-weight: normal;}
+    #menu .content p.l {font-size: 3.5vh; margin-top: 7vh;}
+    #menu .content p {vertical-align: middle; pointer-events: all;}
+    #menu .content img {max-height: 13vh; max-width: 20vh; margin: 2vh 7vh 2vh 0vh; pointer-events: none; vertical-align: middle; display: inline-block;}
+
+    #menu a {color: blue;}
+      #menu a:hover {text-decoration: underline;}
 
 /*
 projects of blackbox
@@ -199,7 +213,7 @@ aphrodite lady seashell bikini
 
     /* animace pri presunu do blackbox() */
     .mainPic {transition: all 1s cubic-bezier(0.33, 1.33, 0.64, 1);}
-    .sidekick, .prj .title {transition: all 0.3s cubic-bezier(0.33, 1.33, 0.64, 1);}
+    .sidekick, .prj .title {transition: all 0.25s cubic-bezier(0.33, 1.33, 0.64, 1);}
     .sidekick.away, .prj .title.away {transform: translate(-50%, -50%) scale(0.3) !important; margin: 0 !important;}
                     .prj .title.away {z-index: 0 !important; bottom: 50% !important;}
 
@@ -215,7 +229,8 @@ ju-das juda -a -as
 .post {z-index: 1; transition: all 1s cubic-bezier(0.33, 1.33, 0.64, 1);}
 .post img {max-width: 20vw; max-height: 30vh; transition: all 0.3s cubic-bezier(0.33, 1.33, 0.64, 1);}
   /* rozmery pro zvetsenou verzi */
-  .post.large img, .mainPic.large {max-width: 60vw; max-height: 70vh;}
+  .post.small img {max-width: 10vw; max-height: 15vh;}
+  .post.large img, .mainPic.large, .post.small.large img {max-width: 60vw; max-height: 70vh !important;}
                    .mainPic.large {transform: translate(-50%, -50%) scale(1) !important; margin-top: -0.25vh;}
 
   /* ikona na zvetseni obrazku v projektu */
@@ -243,7 +258,7 @@ ju-das juda -a -as
         .post.info .content a:hover {text-decoration: underline !important;}
     .post.info .title {padding: 2vh; width: calc(100% - 4vh);}
       .post.info .title .name {float: left; overflow-x: auto; width: 40.5vh;}
-    .post.info li .locate {display: none; position: absolute; right: 2.5vh; background: url('/data/search.png') center center; background-size: cover; width: 3vh; height: 3vh; margin-top: -3vh; transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
+    .post.info li .locate {display: none; float: right; margin-right: -4vh; background: url('/data/search.png') center center; background-size: cover; width: 3vh; height: 3vh; transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
         .post.info li:hover .locate {display: block;}
         .post.info li .locate:hover {cursor: pointer; opacity: 0.5;}
 
@@ -297,7 +312,7 @@ ADMIN
     .admin textarea {width: 50vw; height: 30vh;}
   .admin input[type="submit"].reminder {background: lightgreen !important;}
 
-  .adminTable img, #fronta img {height: 10vh;}
+  .adminTable img, #fronta img {height: 17vh;}
     #fronta table tr td:nth-child(1) {width: 20vh; text-align: center;}
     #fronta table tr td:nth-child(2) {padding-left: 2vh; vertical-align: top;}
   .wait span {animation: wait 1s infinite;}
@@ -309,7 +324,8 @@ ADMIN
     81% {opacity: 1;}
   }
 
-  .adminTable a {margin: auto 0.5vh;}
-  .adminTable a.selected {background: lightgreen;}
-  .adminTable a.not {background: pink;}
+  .adminTable span, .adminTable a {margin: auto 0.5vh;}
+  .adminTable span:hover, .adminTable a:hover {cursor: pointer; text-decoration: underline;}
+  .adminTable span.selected, .adminTable a.selected {background: lightgreen;}
+  .adminTable span.not, .adminTable a.not {background: pink;}
   #prompt {display: none; border: 0.25vh solid red; border-radius: 0.5vh; margin-bottom: 1vh; padding: 1vh; float: left;}

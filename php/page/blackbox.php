@@ -70,7 +70,7 @@ if (isset($_SESSION['kurator'])) {
               }
 
               // vygeneruje vyobrazeni do seznamu
-              $vyobrazeni .= '<li>'.$post.'. '.test(lang($thumb->description, $thumb->description_en), 'VYOBRAZENÍ', 'CONTENT').' <span class=\\"locate\\" post=\\"'.$post.'\\"></span></li>';
+              $vyobrazeni .= '<li>'.$post.'. '.test(lang($thumb->description, $thumb->description_en), 'IMG', 'IMG').' <span class=\\"locate\\" post=\\"'.$post.'\\"></span></li>';
               array_push($imgpreload, '"/data/projects/'.$thumb->filename.'.jpg"');
               $post++;
 
@@ -116,7 +116,7 @@ if (isset($_SESSION['kurator'])) {
         if ($ress = $conn->query($imgs)) {
           while($thumb = $ress->fetch_object()){
 
-            $popis = test(lang($thumb->description, $thumb->description_en), 'VYOBRAZENÍ', 'CONTENT');
+            $popis = test(lang($thumb->description, $thumb->description_en), 'IMG', 'IMG');
 
             $html .= '<div class=\\"post moveable'.(($post == 1)?' large\\" style=\\"z-index: 4;':'').'\\" id=\\"post'.$post.'\\"><img src=\\"/data/projects/'.$thumb->filename.'.jpg\\"><div class=\\"num\\">'.$post.'.</div><div class=\\"bigPost\\"></div></div>';
             $vyobrazeni .= '<li>'.$post.'. '.$popis.' → <a href=\\"/prj/'.$thumb->link.'\\">'.$thumb->autor.'</a> <span class=\\"locate\\" post=\\"'.$post.'\\"></span></li>';
@@ -128,7 +128,7 @@ if (isset($_SESSION['kurator'])) {
           }
         }
 
-        $html .= '<div style=\\"z-index: 2;\\" class=\\"post moveable info\\" id=\\"vyobrazeni\\"><div class=\\"title\\"><div class=\\"name\\">'.lang('SEZNAM VYOBRAZENÍ', 'LIST OF FIGURES').'</div><div class=\\"moreInfo\\"></div></div><div class=\\"content\\">'.$vyobrazeni.'</div></div>';
+        $html .= '<div style=\\"z-index: 2;\\" class=\\"post moveable info wider\\" id=\\"vyobrazeni\\"><div class=\\"title\\"><div class=\\"name\\">'.lang('SEZNAM VYOBRAZENÍ', 'LIST OF FIGURES').'</div><div class=\\"moreInfo\\"></div></div><div class=\\"content\\">'.$vyobrazeni.'</div></div>';
         $html .= '<div style=\\"z-index: 3;\\" class=\\"post moveable info\\" id=\\"info\\"><div class=\\"title\\"><div class=\\"name\\">'.lang('SKUPINA', 'CLUSTER').' #'.$_POST['prjId'].'</div><div class=\\"moreInfo\\"></div></div><div class=\\"content\\">'.implode(', ', $keywords).'</div></div>';
 
     }

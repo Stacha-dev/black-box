@@ -9,8 +9,8 @@ include '../fce.php';
 ?>
 
 <div id="kuratori">
-  <div class="kurator<?php if ($_SESSION['kurator'] == 'k1') {echo ' selected';} ?>" id="k1"><span><?php echo lang('KURÁTOR 1', 'CURATOR 1'); ?></span></div>
-  <div class="kurator<?php if ($_SESSION['kurator'] == 'k2') {echo ' selected';} ?>" id="k2"><span><?php echo lang('KURÁTOR 2', 'CURATOR 2'); ?></span></div>
+  <div class="kurator<?php if ($_SESSION['kurator'] == 'k1') {echo ' selected';} ?>" id="k1"><span><?php echo lang('KURÁTOR 01: PŘEŽIJÍ JEN UMĚLCI', 'CURATOR 1'); ?></span></div>
+  <div class="kurator<?php if ($_SESSION['kurator'] == 'k2') {echo ' selected';} ?>" id="k2"><span><?php echo lang('KURÁTOR 02: NOVÝ ARCHIVÁŘ', 'CURATOR 2'); ?></span></div>
 </div>
 
 <div id="texty">

@@ -1,4 +1,5 @@
 <?php
+session_start();
 if (isset($_POST['autor']) && isset($_POST['descrip'])) {
 
 
@@ -38,6 +39,9 @@ if (isset($_POST['autor']) && !empty($_POST['autor'])) {
 if (isset($_POST['descrip']) && !empty($_POST['descrip'])) {
   $popis = repairStr($_POST['descrip']);
   array_push($where, '(description LIKE "%'.$popis.'%" OR description_en LIKE "%'.$popis.'%")');
+}
+if ($_SESSION['kurator'] == 'k1') {
+  array_push($where, 'display = 1');
 }
 
 

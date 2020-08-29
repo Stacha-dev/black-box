@@ -1,4 +1,4 @@
-import {loading, disableScroll} from './router_fce.js';
+import {loading, disableScroll, jazyk} from './router_fce.js';
 import {loadPosts} from './blackbox.js';
 
 // firestarter
@@ -56,7 +56,7 @@ export function log(data) {
   */
   // variables
   var con = $('#console'),
-      delay = logCount*5+(Math.random()*10), // delay = logCount*30+(Math.random()*20),
+      delay = logCount*10+(Math.random()*10), // delay = logCount*30+(Math.random()*20),
       totalDelay =+ delay;
 
       // pokud se vola log znova, tak zobrazit
@@ -87,7 +87,7 @@ export function log(data) {
           }
 
           // napise zakonceni konzole ›_
-          con.append('<br><br><div class="menuTop">ČERNÁ SKŘÍŇKA / BLACK BOX<div class="tools"><div class="langIcon">'+lang+'</div><div class="consoleIcon toggleLog"></div><a href="/list"><div class="listIcon"></div></a><a href="/memex"><div class="memexIcon"></div></a></div></div>');
+          con.append('<br><br><div class="menuTop">'+jazyk('ČERNÁ SKŘÍŇKA / BLACK BOX', 'BLACK BOX / ČERNÁ SKŘÍŇKA')+'<div class="tools"><div class="langIcon">'+lang+'</div><div class="consoleIcon toggleLog"></div><a href="/list"><div class="listIcon"></div></a><a href="/memex"><div class="memexIcon"></div></a></div></div>');
           con.scrollTop(con.prop('scrollHeight') - con.innerHeight());
 
           // disable scrolling
@@ -98,13 +98,7 @@ export function log(data) {
 
             // load content + hide log
             $('#console').removeClass('log');
-            $('#content').removeClass('fadeout');
-
-              // zobrazi menu pokud neni zobrazeno
-              var menu = $('#menu');
-              if (menu.hasClass('hidden')) {
-                menu.removeClass('hidden');
-              }
+            $('#content').removeClass('fadeoutUp fadeout');
 
             // turn loading off
             loading('off');

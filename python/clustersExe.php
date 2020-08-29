@@ -17,7 +17,7 @@ provede pythnovskou clusterovacku
 if (isset($_POST['url'])) {
 
     // provede pythnovskou clusterovacku
-    $cmd = escapeshellcmd('nohup nice -15 env/bin/python cluster.py \'path='.$_POST['url'].'\' 2>&1 &');
+    $cmd = escapeshellcmd('nohup nice -5 env/bin/python cluster.py \'path='.$_POST['url'].'\' 2>&1 &');
     $output = shell_exec($cmd);
 
     // odstrani nove radky a pak uvozovky
