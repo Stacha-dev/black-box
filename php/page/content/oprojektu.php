@@ -36,7 +36,7 @@ $text = lang('
 </p>
 <br>
 <p class="l">KONTAKT</p>
-<p>black.box@ticbrno.cz<br>(+420) 702 152 298</p>
+<p>kupkova@ticbrno.cz<br>(+420) 702 152 298</p>
 <br>
 <p class="l">PODĚKOVÁNÍ</p>
 <p>Kurátorský projekt Černá skříňka je realizován za finanční spoluúčasti Technologické agentury České republiky v rámci programu ÉTA. Jedná se o jeden z výstupů projektu Media Art Live Archive: Inteligentní rozhraní pro interaktivní zprostředkování kulturního dědictví (č. TL02000270).</p>
@@ -47,7 +47,7 @@ $text = lang('
 <p>PARTNEŘI</p>
 <p><img src="/data/logo/muni.png" style="max-height: 8vh;"><img src="/data/logo/mk.jpg"><img src="/data/logo/tacr.png"></p>
 ', '
-<h1>THE BLACK BOX / ČERNÁ SKŘÍŇKA</h1>
+<h1>BLACK BOX / ČERNÁ SKŘÍŇKA</h1>
 
 <p class="l">Welcome to the website presenting a double curatorial project that was created when there was no place for the art on the Earth. All galleries and exhibition places were closed and to meet up with someone was forbidden. The whole world has stopped – paralyzed by the Covid-19 pandemic. The timelessness of the quarantine was an opportunity to ask about the meaning, place and function of art in today’s society, from the point of view of both artists and cultural institutions, and from the point of view of the audience and the ecosystem of society.</p>
 <p class="l">Look at the traces left by the virus in the spring of 2020.</p>
@@ -77,7 +77,7 @@ $text = lang('
 </p>
 <br>
 <p class="l">CONTACT</p>
-<p>black.box@ticbrno.cz<br>(+420) 702 152 298</p>
+<p>kupkova@ticbrno.cz<br>(+420) 702 152 298</p>
 <br>
 <p class="l">ACKNOWLEDGEMENT</p>
 <p>The Black Box curatorial project is being implemented with financial participation of the Technology Agency of the Czech Republic Technology Agency of the Czech Republic within the programme ETA. This is one of the outputs of the project (no. TL02000270) Media Art Live Archive: Intelligent Interface for Interactive Mediation of Cultural Heritage.</p>

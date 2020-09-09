@@ -164,7 +164,11 @@ export function page(url) {
 
                 // preload images
                 var imgs = obj.imgs,
-                    loaded = [];
+                    loaded = [],
+                    // promenne pro ukazatel %
+                    imgsSize = imgs.length,
+                    imgsRes = 0,
+                    imgsPer = 0;
 
                 log({"images": "loading started"});
 
@@ -186,7 +190,11 @@ export function page(url) {
                       // on image loaded oznac ho jako loadnuty
                       img.onload = function() {
 
-                        log({"url": url, "msg": "loaded"});
+                        // vypocet procent do logu + log
+                        imgsRes++;
+                        imgsPer = Math.floor(imgsRes/imgsSize*100);
+                        log({"url": url, "msg": "loaded", "status": imgsPer+"%"});
+
                         // zapsat jako vyreseno
                         loaded.resolve();
 

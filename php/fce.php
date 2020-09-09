@@ -241,7 +241,7 @@ function titulek($title, $conn) {
       switch($path[1]) {
 
         default: case 'memex':
-          $result .= ' — MEMEX';
+          // $result .= ' — MEMEX';
         break;
         case 'prj':
           if ($_SESSION['kurator'] == 'k1') {

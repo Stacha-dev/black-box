@@ -77,13 +77,14 @@ if (isset($_SESSION['kurator'])) {
             }
 
           // klicove slova
-          if (!empty($prj->keywords)) {
-            $keywords = '<p>['.preg_replace('/\s*,\s*/', '], [', lang($prj->keywords, $prj->keywords_en)).']</p>';
+          if (!empty($prj->keywords) || !empty($prj->keywords_en)) {
+            //$keywords = '<p>['.preg_replace('/\s*,\s*/', '], [', lang($prj->keywords, $prj->keywords_en)).']</p>';
+            $keywords = '<p>'.lang('KLÍČOVÉ SLOVA', 'KEYWORDS').'<br>'.lang($prj->keywords, $prj->keywords_en).'</p>';
           }
 
           // pricpe do html seznam vyobrazeni a info o projektu
           $html .= '<div style=\\"z-index: 2;\\" class=\\"post moveable info\\" id=\\"vyobrazeni\\"><div class=\\"title\\"><div class=\\"name\\">'.lang('SEZNAM VYOBRAZENÍ', 'LIST OF FIGURES').'</div><div class=\\"moreInfo\\"></div></div><div class=\\"content\\">'.$vyobrazeni.'</div></div>';
-          $html .= '<div style=\\"z-index: 3;\\" class=\\"post moveable info\\" id=\\"info\\"><div class=\\"title\\"><div class=\\"name\\">'.$prj->name.'</div><div class=\\"moreInfo\\"></div></div><div class=\\"content\\">'.lang($prj->info, $prj->info).$keywords.'</div></div>';
+          $html .= '<div style=\\"z-index: 3;\\" class=\\"post moveable info\\" id=\\"info\\"><div class=\\"title\\"><div class=\\"name\\">'.$prj->name.'</div><div class=\\"moreInfo\\"></div></div><div class=\\"content\\">'.str_replace('"', '\"', findLinks(lang($prj->info, $prj->info_en))).$keywords.'</div></div>';
 
           $html .= $mainPic;
 

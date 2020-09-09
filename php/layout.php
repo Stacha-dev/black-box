@@ -46,10 +46,21 @@ echo '
     <meta name="viewport" content="width=device-width">
 
     <link rel="icon" href="/data/fav.png">
-    <link href="/css/main.css?v=1.00launch" rel="stylesheet">
+    <link href="/css/main.css?v=1.01" rel="stylesheet">
 
     <script src="/js/jq.js" type="text/javascript"></script>
-    <script src="/js/fce.js?v=1.00launch" type="module"></script>
+    <script src="/js/fce.js?v=1.02" type="module"></script>
+
+    <!-- analytics -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-176732552-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag(\'js\', new Date());
+      gtag(\'config\', \'UA-176732552-1\');
+    </script>
+    <!-- /analytics -->
 
     <meta property="og:image" content="'.$og.'">
 

@@ -87,7 +87,7 @@ export function log(data) {
           }
 
           // napise zakonceni konzole ›_
-          con.append('<br><br><div class="menuTop">'+jazyk('ČERNÁ SKŘÍŇKA / BLACK BOX', 'BLACK BOX / ČERNÁ SKŘÍŇKA')+'<div class="tools"><div class="langIcon">'+lang+'</div><div class="consoleIcon toggleLog"></div><a href="/list"><div class="listIcon"></div></a><a href="/memex"><div class="memexIcon"></div></a></div></div>');
+          con.append('<br><br><div class="menuTop"><a href="/" class="textBlackBox">'+jazyk('ČERNÁ SKŘÍŇKA / BLACK BOX', 'BLACK BOX / ČERNÁ SKŘÍŇKA')+'</a><div class="tools"><div class="langIcon">'+lang+'</div><div class="consoleIcon toggleLog"></div><a href="/list"><div class="listIcon"></div></a><a href="/memex"><div class="memexIcon"></div></a></div></div>');
           con.scrollTop(con.prop('scrollHeight') - con.innerHeight());
 
           // disable scrolling
