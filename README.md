@@ -2,14 +2,32 @@
 Website presenting a double curatorial project that was created when there was no place for the art on the Earth.
 
 
+# About
+### Theory
+Jana Horáková
 
-### WEB
+
+### Art
+Marika Kupková
+
+
+### Programmed and Coded by 
+Oliver Staša
+
+
+### Designed by
+Alina Matějová
+
+
+### AI moduled by
+Pavel Sikora, Štěpán Miklánek
+
+
+### Link
 https://cerna-skrinka.cz
 
 https://blackbox-archive.cz
 
 
-
-
-### PROJECT TIME TRACKER
+### Time tracker
 https://wakatime.com/@oliverstasa/projects/mqnelrjfqr?start=2020-07-01&end=2020-09-09
