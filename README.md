@@ -11,15 +11,15 @@ Jana Horáková
 Marika Kupková
 
 
-### Programmed and Coded by 
+### Programmed and Coded
 Oliver Staša
 
 
-### Designed by
+### Designed
 Alina Matějová
 
 
-### AI setup by
+### AI setup
 Pavel Sikora, Štěpán Miklánek
 
 
