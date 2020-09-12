@@ -19,7 +19,7 @@ Oliver Staša
 Alina Matějová
 
 
-### AI moduled by
+### AI setup by
 Pavel Sikora, Štěpán Miklánek
 
 
