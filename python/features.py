@@ -1,20 +1,12 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from keras import applications
-from keras.applications.vgg16 import preprocess_input
-from keras.preprocessing import image
+from keras.models import Model
 import numpy as np
+import cv2 as cv
 from pandas import DataFrame as DF
-from skimage.color import rgb2gray
+from model_test import create_model
 import tensorflow as tf
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-    try:
-        for gpu in gpus:
-            tf.config.experimental.set_memory_growth(gpu, True)
-    except RuntimeError as e:
-        print(e)
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 IMG_EXTS = ['jpg', 'jpeg', 'bmp', 'png']
@@ -23,7 +15,7 @@ IMG_EXTS = ['jpg', 'jpeg', 'bmp', 'png']
 def named_model(name):
     # include_top=False removes the fully connected layer at the end/top of the network
     # This allows us to get the feature vector as opposed to a classification
-    pooling = 'max'
+    pooling = 'avg'
     if name == 'ResNet50':
         return applications.resnet50.ResNet50(weights='imagenet', include_top=False, pooling=pooling)
 
@@ -42,44 +34,46 @@ def named_model(name):
     elif name == 'MobileNet':
         return applications.mobilenet.MobileNet(weights='imagenet', include_top=False, pooling=pooling)
 
+    elif name == 'Autoencoder':
+        model_weights_path = 'models/model.06-0.0805.hdf5'
+        model = create_model((256, 256, 3))
+        model.load_weights(model_weights_path)
+        inter_output_model = Model(model.input, model.get_layer(index=31).output)
+        return inter_output_model
     else:
         raise ValueError('Unrecognised model: "{}"'.format(name))
 
 
-def _extract(fp, model, rgb=False):
+def _extract(fp, model, rgb=True):
     # Load the image, setting the size to 224 x 224
-    img = image.load_img(fp, target_size=(224, 224))
-    img_data = image.img_to_array(img)
+    # img = image.load_img(fp, target_size=(224, 224))
+    # img_data = image.img_to_array(img)
     # Convert the image to a numpy array, resize it (1, 2, 244, 244), and preprocess it
 
+    bgr_img = cv.imread(fp)
+    bgr_img = cv.resize(bgr_img, (256, 256), interpolation=cv.INTER_AREA)
     if rgb:
-        img_data = np.expand_dims(img_data, axis=0)
-        img_data = preprocess_input(img_data)
+        rgb_img = cv.cvtColor(bgr_img, cv.COLOR_BGR2RGB)
     else:
-        img_data = rgb2gray(img_data)
-        img_data = np.dstack((img_data, img_data, img_data))
-        img_data = np.expand_dims(img_data, axis=0)
-        img_data = preprocess_input(img_data)
+        rgb_img = cv.cvtColor(bgr_img, cv.COLOR_BGR2GRAY)
+    rgb_img = rgb_img / 255.
+    rgb_img = np.expand_dims(rgb_img, axis=0)
 
-    # Extract the features
-    np_features = model.predict(img_data)  # [0]
-    np_features = np_features[0]
-
-    # Convert from Numpy to a list of values
+    np_features = model.predict(rgb_img).flatten()  # [0]
     return np.char.mod('%f', np_features)
 
 
-def extract_features(filepath, model='VGG19', write_to=None):
+def extract_features(filepath, model='VGG16', write_to=None):
     """ Reads an input image file, or directory containing images, and returns
     resulting extracted features. Use write_to=<some_filepath> to save the
     features somewhere. """
 
-    ## print('Extracting features')
+    # print('Extracting features')
 
     # Get the model
-    ## print('Acquiring model "{}"'.format(model), end='')
+    # print('Acquiring model "{}"'.format(model), end='')
     m = named_model(model)
-    ## print('\rAcquired model\t\t\t\t\t')
+    # print('\rAcquired model\t\t\t\t\t')
 
     # Get the image filepaths
     filepath = filepath.replace('\\', '/')
@@ -106,26 +100,20 @@ def extract_features(filepath, model='VGG19', write_to=None):
     # And the image filenames
     img_fns = [fp.replace('\\', '/').rsplit('/', 1)[-1] for fp in img_fps]
 
-    ## print('Found {} images'.format(len(img_fns)))
+    # print('Found {} images'.format(len(img_fns)))
 
     # Run the extraction over each image
     features = []
     for (i, fp) in enumerate(img_fps):
-        ## print('\rProcessing: {:.2f}%\t\t'.format((i + 1) / len(img_fps) * 100), end='', flush=True)
+        # print('\rProcessing: {:.2f}%\t\t'.format((i + 1) / len(img_fps) * 100), end='', flush=True)
         features.append(_extract(fp, m))
 
-    ## print('\nSuccess')
+    # print('\nSuccess')
 
     # Make into a DataFrame and add an ID column
     features_df = DF(features, dtype=object)
     id_col = DF(img_fns, dtype=str)
     features_df.insert(0, 'ID', id_col)
-
-    if write_to is not None:
-        try:
-            features_df.to_csv(write_to, index=False)
-            ## print('Wrote features to: "{}"'.format(write_to))
-        except Exception as e:
-            print('WARNING: Feature extraction could not write to file: "{}"'.format(e))
+    features_df.to_csv(write_to, index=False)
 
     return features_df

@@ -1,12 +1,5 @@
 <?php
 /*
-PRIPOJENI K SQL
-LOCALHOST STACHA
-*/
-
-
-
-/*
 MySQL
 */
 function sql() {

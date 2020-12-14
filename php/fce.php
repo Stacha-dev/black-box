@@ -282,7 +282,7 @@ function og($conn) {
     } else {
 
       //$url = '/data/og'.rand(1,3).'.png';
-      $url = '/data/og3.png';
+      $url = '/data/og.png';
 
     }
 

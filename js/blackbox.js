@@ -62,7 +62,7 @@ export function loadPosts() {
       small = false,
       pocet = window.blackbox.length;
 
-  if (pocet > 40) {
+  if (pocet > 50) {
     small = true;
   }
 

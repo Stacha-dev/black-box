@@ -1,2 +1,10 @@
 .remote-sync.json
 /data/projects/*
+/php/admin/login.php
+/python
+!/python/clustersExe.php
+!/python/cluster.py
+!/python/reducers.py
+!/python/features.py
+/stats
+/error

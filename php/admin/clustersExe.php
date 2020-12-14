@@ -16,24 +16,28 @@ provede pythnovskou clusterovacku
 */
 if (isset($_POST['url'])) {
 
-    // provede pythnovskou clusterovacku
-    $cmd = escapeshellcmd('nohup nice -5 env/bin/python cluster.py \'path='.$_POST['url'].'\' 2>&1 &');
-    $output = shell_exec($cmd);
+    $cmd = escapeshellcmd('nice -15 ../../python/env/bin/python ../../python/cluster.py \'path='.$_POST['url'].'\'');
+    $output = shell_exec('nohup '.$cmd.' 2>&1 &');
 
     // odstrani nove radky a pak uvozovky
     $output = trim(preg_replace('/\s+/', ' ', $output));
     $output = trim(str_replace('"', '\"', $output));
-    $output = trim(str_replace('\'', '"', $output));
+    $output = trim(str_replace('\'', '\\\'', $output));
 
-    // dekoduje json
+
+
+    /*
+    dekoduje json
+    */
     $json = json_decode($output, true);
-    if ($json['success'] == "true") {
+    if ($json['success'] == true) {
 
       $status = 'success';
 
+
     } else {
 
-      $status = 'JSON ERROR';
+      $status = 'ERROR';
 
     }
 
@@ -41,7 +45,7 @@ if (isset($_POST['url'])) {
 // konec isset $_post
 } else {
 
-  $status = 'POST ERROR';
+  $status = 'ERROR';
 
 }
 
@@ -56,7 +60,7 @@ OUTPUT
 echo '
 {
   "headder": "clustersExe",
-  "result": '.$output.',
+  "result": "'.$output.'",
   "status": "'.$status.'"
 }
 ';

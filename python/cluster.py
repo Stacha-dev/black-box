@@ -22,7 +22,7 @@ def get_labels(features, config):
     x = x[:, 1:].astype(np.float)
 
     features = normalize(x, features)
-    reduced = pca(features, dims=16, write_to='reduced/pca_{}.csv'.format(config['name']))
+    reduced = pca(features, dims=20, write_to='reduced/pca_{}.csv'.format(config['name']))
     _ = tsne(reduced, dims=config['n_dims'], write_to='reduced/tsne_{}.csv'.format(config['name']))
     datapoints = []
     images = []
@@ -45,8 +45,7 @@ def get_labels(features, config):
 
     n_clusters = len(set(labels))
 
-    t1 = time()
-    #    print('Clustering done,', t1 - t0, 'seconds, n of clusters:', n_clusters)
+    t1 = time() #    print('Clustering done,', t1 - t0, 'seconds, n of clusters:', n_clusters)
     return labels
 
 
@@ -76,7 +75,7 @@ def main():
         config = {'image_path': url,
                   'n_dims': 2,
                   'name': 'blackbox_cluster',
-                  'model': 'VGG16'}
+                  'model': 'Autoencoder'}
 
         features = extract_features(config['image_path'], model=config['model'])
         # features = pd.read_pickle('features/features.pkl')
@@ -90,14 +89,14 @@ def main():
             clusters[label].append(img)
 
         result = {
-            "success": "true",
+            "success": True,
             "error": [],
             "clusters": clusters
         }
         print(result)
     else:
         result = {
-            "success": "false",
+            "success": False,
             "error": "No path",
             "clusters": []
         }
