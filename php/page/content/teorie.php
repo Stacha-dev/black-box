@@ -29,6 +29,8 @@ $text = lang('
 <li>ČERNÝ, David et al. Etika epidemie (série článků). Centrum Karla Čapka pro studium hodnot ve vědě a technice [online]. 2020. Dostupné z: https://www.etikaepidemie.cz/ </li>
 <li>HRUBY, Erica. Covid-19 Resources, Art-Science Toolkit, Social Distancing and Connectedness. Leonardo [online], 27. 4. 2020. [cit. 20. 4. 2020]. Dostupné z: https://www.leonardo.info/blog/2020/04/27/covid-19-resources-art-science-toolkit-social-distancing-and-connectedness </li>
 <li>AYTON-SHENKER, Diana. The Leonardo COVID-19 Diaries, Leonardo [online], June 2020, volume 53, issue 3, s. 355–357.Dostupné z: https://www.mitpressjournals.org/doi/abs/10.1162/leon_e_01939?mobileUi=0 </li>
+<li>HLÁDEKOVÁ, Katarína. Jediné, čo si pre svoje štúdium želám, je vrátiť sa do „offlinu“. Artalk.cz [online], 4. 1. 2021, [cit. 13. 1. 2021]. Dostupné z: https://artalk.cz/2016/10/01/filko-ok/>https://artalk.cz/2021/01/04/jedine-co-si-pro-svoje-studium-zelam-je-vratit-sa-do-offlinu/</li>
+<li>HLÁDEKOVÁ, Katarína. Počujeme sa? Online Art School v zimnom kabáte. Artalk.cz [online], 14. 12. 2020, [cit. 13. 1. 2021]. Dostupné z: https://artalk.cz/2020/12/14/pocujeme-sa-online-art-school-v-zimnom-kabate/</li>
 </ul>
 </p>
 
